@@ -96,7 +96,7 @@ h1 { color: #333; } p { color: #666; }</style>
 <body><h1>Brainstorm Companion</h1>
 <p>Waiting for Claude to push a screen...</p></body></html>`;
 
-const frameTemplate = fs.readFileSync(path.join(__dirname, 'frame-template.html'), 'utf-8');
+const frameTemplate = fs.readFileSync(path.join(__dirname, '..', 'assets', 'frame-template.html'), 'utf-8');
 const helperScript = fs.readFileSync(path.join(__dirname, 'helper.js'), 'utf-8');
 const helperInjection = '<script>\n' + helperScript + '\n</script>';
 
