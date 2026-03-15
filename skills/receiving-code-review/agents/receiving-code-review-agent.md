@@ -1,3 +1,10 @@
+---
+description: Processes incoming code review feedback with technical rigor — verifies against codebase, evaluates soundness, pushes back or implements one item at a time
+model: sonnet
+name: receiving-code-review-agent
+tools: Read, Bash, Glob, Grep
+---
+
 # Receiving code review agent
 
 Processes incoming code review feedback with technical rigor: reads without reacting, verifies against the codebase, evaluates soundness, responds or pushes back with evidence, and implements one item at a time.

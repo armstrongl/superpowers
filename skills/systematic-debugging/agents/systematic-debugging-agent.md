@@ -1,3 +1,10 @@
+---
+description: Investigates any bug or test failure using four-phase root cause analysis before proposing any fix
+model: sonnet
+name: systematic-debugging-agent
+tools: Read, Bash, Glob, Grep, Write
+---
+
 # Systematic debugging agent
 
 Independently investigate any bug, test failure, or unexpected behavior using a four-phase process to find and fix root causes rather than symptoms.

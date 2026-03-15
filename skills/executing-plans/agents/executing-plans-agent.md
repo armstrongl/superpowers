@@ -1,3 +1,10 @@
+---
+description: Loads an implementation plan and executes it step by step with verification at each task
+model: sonnet
+name: executing-plans-agent
+tools: Read, Write, Edit, Bash, Glob, Grep
+---
+
 # Executing plans agent
 
 Load an implementation plan and execute it step by step, verifying each task before moving on.

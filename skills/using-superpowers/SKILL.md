@@ -1,9 +1,7 @@
 ---
 description: >
   Use at the start of every conversation to establish the rules for finding and
-  invoking skills. Ensures the Skill tool is called before any response,
-  action, or clarifying question. Covers skill discovery, invocation order,
-  priority rules, platform adaptation, and rationalization red flags.
+  invoking skills before any response, action, or clarifying question.
 name: using-superpowers
 ---
 

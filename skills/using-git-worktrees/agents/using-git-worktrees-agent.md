@@ -1,3 +1,10 @@
+---
+description: Sets up an isolated git worktree for a branch with dependency install and clean test baseline verification
+model: haiku
+name: using-git-worktrees-agent
+tools: Read, Bash
+---
+
 # Using-git-worktrees agent
 
 Set up an isolated git worktree for a branch independently when dispatched as a subagent.

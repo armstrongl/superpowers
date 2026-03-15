@@ -1,3 +1,10 @@
+---
+description: Analyzes a set of tasks for independence, crafts focused subagent prompts, dispatches them in parallel, and integrates results
+model: sonnet
+name: dispatching-parallel-agents-agent
+tools: Read, Bash, Glob, Grep, Write, Agent
+---
+
 # Dispatching parallel agents agent
 
 Assesses a set of tasks, determines which can run concurrently, and dispatches them as isolated subagents in parallel — collecting and integrating their results.

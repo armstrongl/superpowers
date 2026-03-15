@@ -1,5 +1,5 @@
 ---
-description: Enforce red-green-refactor TDD discipline when writing code. Use when implementing any feature, bug fix, behavior change, or refactoring — before writing any production code. Use when the user mentions TDD, test-first, or "write failing test." Counters rationalizations for skipping tests and enforces the iron law that no production code may exist without a prior failing test.
+description: Use when implementing any feature, bug fix, behavior change, or refactoring — before writing any production code. Use when the user mentions TDD, test-first, or "write failing test." Counters rationalizations for skipping tests and enforces the iron law that no production code may exist without a prior failing test.
 name: test-driven-development
 ---
 

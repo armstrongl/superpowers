@@ -1,3 +1,10 @@
+---
+description: Creates new agent skills using TDD methodology — baseline test, write skill, verify compliance, refactor to close loopholes
+model: sonnet
+name: writing-skills-agent
+tools: Read, Write, Edit, Bash, Glob, Grep, Agent
+---
+
 # Writing skills agent
 
 Creates new agent skills following TDD methodology: baseline test, write skill, verify compliance, refactor to close loopholes.

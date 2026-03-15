@@ -1,3 +1,10 @@
+---
+description: Creates a complete implementation plan from a spec document with TDD task decomposition and review loop
+model: sonnet
+name: writing-plans-agent
+tools: Read, Bash, Glob, Grep, Write, Agent
+---
+
 # Writing plans agent
 
 Creates a complete implementation plan from a spec document, applying TDD-first task decomposition, file structure analysis, and a plan-review loop before handoff.

@@ -1,5 +1,5 @@
 ---
-description: Set up isolated git worktrees for parallel branch development. Use this skill whenever starting feature work, fixing bugs, reviewing PRs, or executing any implementation plan — it creates a dedicated working directory per branch so work never bleeds across tasks. Trigger this skill when the user says "new branch," "isolated workspace," "worktree," "parallel work," or before any implementation that modifies the codebase. Always prefer this over stashing or switching branches in place.
+description: Use when starting feature work, fixing bugs, reviewing PRs, or executing any implementation plan that modifies the codebase. Trigger when the user says "new branch," "isolated workspace," "worktree," or "parallel work." Always prefer this over stashing or switching branches in place.
 name: using-git-worktrees
 ---
 

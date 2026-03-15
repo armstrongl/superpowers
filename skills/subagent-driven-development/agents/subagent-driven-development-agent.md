@@ -1,3 +1,10 @@
+---
+description: Orchestrates the full subagent-driven development workflow — dispatches implementers, runs two-stage review per task, handles escalations
+model: sonnet
+name: subagent-driven-development-agent
+tools: Read, Bash, Glob, Grep, Agent
+---
+
 # Subagent-Driven development agent
 
 Orchestrates the full subagent-driven development workflow: reads a plan, dispatches implementer subagents per task, runs two-stage review after each, handles status escalations, and iterates until all tasks are complete.

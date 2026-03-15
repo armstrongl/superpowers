@@ -1,15 +1,6 @@
 ---
-agents:
-  - agents/requesting-code-review-agent.md
-  - agents/code-reviewer.md
 description: Use when completing tasks, implementing major features, or before merging to verify work meets requirements
-evals:
-  - eval/evals.json
 name: requesting-code-review
-references:
-  - references/fetch-references.md
-scripts:
-  - scripts/fetch_resources.py
 ---
 
 # Requesting code review

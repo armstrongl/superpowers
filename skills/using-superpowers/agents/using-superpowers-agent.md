@@ -1,3 +1,10 @@
+---
+description: Determines which skills apply to an incoming task and emits ordered invocation guidance before any action is taken
+model: haiku
+name: using-superpowers-agent
+tools: Read
+---
+
 # Using-superpowers agent
 
 Helps a Claude instance discover, select, and correctly invoke skills from the

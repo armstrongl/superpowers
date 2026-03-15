@@ -1,3 +1,10 @@
+---
+description: Verifies tests pass, presents four structured completion options, executes the chosen workflow, and cleans up worktrees
+model: haiku
+name: finishing-a-development-branch-agent
+tools: Read, Bash
+---
+
 # Finishing a development branch agent
 
 Guide the completion of a development branch by verifying tests, presenting structured options, executing the chosen workflow, and cleaning up worktrees.

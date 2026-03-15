@@ -1,5 +1,5 @@
 ---
-description: Execute a written implementation plan step by step with review checkpoints, task tracking, and verification. Use when the user has a plan file ready to implement, says "execute this plan," "implement this plan," "run this plan," or "start on this plan." Prefer supapowers:subagent-driven-development when subagents are available.
+description: Use when the user has a plan file ready to implement, says "execute this plan," "implement this plan," "run this plan," or "start on this plan." Prefer supapowers:subagent-driven-development when subagents are available.
 name: executing-plans
 ---
 

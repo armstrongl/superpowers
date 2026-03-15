@@ -1,8 +1,6 @@
 ---
 description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
 name: systematic-debugging
-tags: [debugging, root-cause-analysis, testing, reliability]
-version: "1.1.0"
 ---
 
 # Systematic debugging

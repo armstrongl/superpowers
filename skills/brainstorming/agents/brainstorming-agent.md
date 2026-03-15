@@ -1,3 +1,10 @@
+---
+description: Leads a complete brainstorming session independently from idea to approved spec
+model: sonnet
+name: brainstorming-agent
+tools: Read, Bash, Glob, Grep, Write, Agent
+---
+
 # Brainstorming agent
 
 Leads a complete brainstorming session independently: explores context, asks

@@ -1,3 +1,10 @@
+---
+description: Orchestrates code reviews by gathering git context, dispatching a reviewer subagent, and surfacing structured feedback
+model: haiku
+name: requesting-code-review-agent
+tools: Read, Bash, Glob, Agent
+---
+
 # Requesting code review agent
 
 Orchestrates code reviews by gathering context, dispatching reviewer subagents, and processing their feedback.

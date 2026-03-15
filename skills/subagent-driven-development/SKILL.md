@@ -1,8 +1,6 @@
 ---
-description: Execute implementation plans by dispatching fresh subagents per task with two-stage review in the current session
+description: Use when executing implementation plans with independent tasks in the current session, when subagents are available.
 name: subagent-driven-development
-tags: [implementation, subagents, orchestration, review, planning]
-version: "1.1"
 ---
 
 # Subagent-Driven development

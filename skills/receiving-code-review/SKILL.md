@@ -1,16 +1,10 @@
 ---
-agent: agents/receiving-code-review-agent.md
 description: >
   Use when receiving code review feedback, before implementing suggestions,
   especially if feedback seems unclear or technically questionable. Requires
   technical rigor and verification, not performative agreement or blind
   implementation.
 name: receiving-code-review
-tags:
-  - code-review
-  - technical-communication
-  - verification
-version: "1.1.0"
 ---
 
 # Code review reception

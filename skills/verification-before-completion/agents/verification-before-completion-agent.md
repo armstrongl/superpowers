@@ -1,3 +1,10 @@
+---
+description: Runs fresh evidence-gathering commands for a specific completion claim and reports verified status with supporting output
+model: haiku
+name: verification-before-completion-agent
+tools: Bash, Read
+---
+
 # Verification before completion agent
 
 Run evidence-gathering commands for a specific completion claim, then report the verified status with supporting output.
