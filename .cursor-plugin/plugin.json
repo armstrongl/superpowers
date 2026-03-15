@@ -1,14 +1,14 @@
 {
-  "name": "superpowers",
-  "displayName": "Superpowers",
+  "name": "supapowers",
+  "displayName": "Supapowers",
   "description": "Core skills library: TDD, debugging, collaboration patterns, and proven techniques",
   "version": "5.0.2",
   "author": {
-    "name": "Jesse Vincent",
-    "email": "jesse@fsck.com"
+    "name": "armstrongl",
+    "email": "larah@larah.io"
   },
-  "homepage": "https://github.com/obra/superpowers",
-  "repository": "https://github.com/obra/superpowers",
+  "homepage": "https://github.com/armstrongl/superpowers",
+  "repository": "https://github.com/armstrongl/superpowers",
   "license": "MIT",
   "keywords": ["skills", "tdd", "debugging", "collaboration", "best-practices", "workflows"],
   "skills": "./skills/",

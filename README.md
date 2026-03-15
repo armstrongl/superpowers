@@ -1,4 +1,4 @@
-# Superpowers
+# Supapowers
 
 Superpowers is a complete software development workflow for your coding agents, built on top of a set of composable "skills" and some initial instructions that make sure your agent uses them.
 
@@ -15,13 +15,7 @@ Next up, once you say "go", it launches a *subagent-driven-development* process,
 There's a bunch more to it, but that's the core of the system. And because the skills trigger automatically, you don't need to do anything special. Your coding agent just has Superpowers.
 
 
-## Sponsorship
-
-If Superpowers has helped you do stuff that makes money and you are so inclined, I'd greatly appreciate it if you'd consider [sponsoring my opensource work](https://github.com/sponsors/obra).
-
-Thanks! 
-
-- Jesse
+Forked from [obra/superpowers](https://github.com/obra/superpowers) by Jesse Vincent.
 
 
 ## Installation
@@ -35,7 +29,7 @@ Superpowers is available via the [official Claude plugin marketplace](https://cl
 Install the plugin from Claude marketplace:
 
 ```bash
-/plugin install superpowers@claude-plugins-official
+/plugin install supapowers@supapowers-dev
 ```
 
 ### Claude Code (via Plugin Marketplace)
@@ -43,13 +37,13 @@ Install the plugin from Claude marketplace:
 In Claude Code, register the marketplace first:
 
 ```bash
-/plugin marketplace add obra/superpowers-marketplace
+/plugin marketplace add armstrongl/superpowers
 ```
 
 Then install the plugin from this marketplace:
 
 ```bash
-/plugin install superpowers@superpowers-marketplace
+/plugin install supapowers@supapowers-dev
 ```
 
 ### Cursor (via Plugin Marketplace)
@@ -67,7 +61,7 @@ or search for "superpowers" in the plugin marketplace.
 Tell Codex:
 
 ```
-Fetch and follow instructions from https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.codex/INSTALL.md
+Fetch and follow instructions from https://raw.githubusercontent.com/armstrongl/superpowers/refs/heads/main/.codex/INSTALL.md
 ```
 
 **Detailed docs:** [docs/README.codex.md](docs/README.codex.md)
@@ -77,7 +71,7 @@ Fetch and follow instructions from https://raw.githubusercontent.com/obra/superp
 Tell OpenCode:
 
 ```
-Fetch and follow instructions from https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.opencode/INSTALL.md
+Fetch and follow instructions from https://raw.githubusercontent.com/armstrongl/superpowers/refs/heads/main/.opencode/INSTALL.md
 ```
 
 **Detailed docs:** [docs/README.opencode.md](docs/README.opencode.md)
@@ -85,13 +79,13 @@ Fetch and follow instructions from https://raw.githubusercontent.com/obra/superp
 ### Gemini CLI
 
 ```bash
-gemini extensions install https://github.com/obra/superpowers
+gemini extensions install https://github.com/armstrongl/superpowers
 ```
 
 To update:
 
 ```bash
-gemini extensions update superpowers
+gemini extensions update supapowers
 ```
 
 ### Verify Installation
@@ -167,7 +161,7 @@ See `skills/writing-skills/SKILL.md` for the complete guide.
 Skills update automatically when you update the plugin:
 
 ```bash
-/plugin update superpowers
+/plugin update supapowers
 ```
 
 ## License
@@ -176,5 +170,4 @@ MIT License - see LICENSE file for details
 
 ## Support
 
-- **Issues**: https://github.com/obra/superpowers/issues
-- **Marketplace**: https://github.com/obra/superpowers-marketplace
+- **Issues**: https://github.com/armstrongl/superpowers/issues
