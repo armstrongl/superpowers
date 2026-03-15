@@ -138,6 +138,49 @@ From 24 failure memories:
 - Implications of success
 - ANY communication suggesting completion/correctness
 
+## Verifying configuration changes
+
+When testing changes to configuration, providers, feature flags, or environment:
+
+**Don't only verify the operation succeeded. Verify the output reflects the intended change.**
+
+### Common failure pattern
+
+Operation succeeds because *some* valid config exists, but it's not the config you intended to test.
+
+### Examples
+
+| Change | Insufficient | Required |
+| -------- | ------------- | ---------- |
+| Switch LLM provider | Status 200 | Response contains expected model name |
+| Enable feature flag | No errors | Feature behavior actually active |
+| Change environment | Deploy succeeds | Logs/vars reference new environment |
+| Set credentials | Auth succeeds | Authenticated user/context is correct |
+
+### Gate function
+
+```text
+BEFORE claiming configuration change works:
+
+1. IDENTIFY: What should be DIFFERENT after this change?
+2. LOCATE: Where is that difference observable?
+   - Response field (model name, user ID)
+   - Log line (environment, provider)
+   - Behavior (feature active/inactive)
+3. RUN: Command that shows the observable difference
+4. VERIFY: Output contains expected difference
+5. ONLY THEN: Claim configuration change works
+```
+
+Red flags:
+
+- "Request succeeded" without checking content
+- Checking status code but not response body
+- Verifying no errors but not positive confirmation
+
+**Why this works:**
+Forces verification of INTENT, not merely operation success.
+
 ## The bottom line
 
 **No shortcuts for verification.**

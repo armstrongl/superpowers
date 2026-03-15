@@ -120,6 +120,110 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 
 **Never** ignore an escalation or force the same model to retry without changes. If the implementer said it's stuck, something needs to change.
 
+## Process hygiene for e2e tests
+
+When dispatching subagents that start services (servers, databases, message queues):
+
+### Problem
+
+Subagents are stateless — they don't know about processes started by previous subagents. Background processes persist and can interfere with later tests.
+
+### Solution
+
+Before dispatching an E2E test subagent, include cleanup instructions in the prompt:
+
+```text
+BEFORE starting any services:
+
+1. Kill existing processes: pkill -f "<service-pattern>" 2>/dev/null || true
+2. Wait for cleanup: sleep 1
+3. Verify port free: lsof -i :<port> && echo "ERROR: Port still in use" || echo "Port free"
+
+AFTER tests complete:
+
+1. Kill the process you started
+2. Verify cleanup: pgrep -f "<service-pattern>" || echo "Cleanup successful"
+```
+
+### Example
+
+```text
+Task: Run E2E test of API server
+
+Prompt includes:
+"Before starting the server:
+
+- Kill any existing servers: pkill -f 'node.*server.js' 2>/dev/null || true
+- Verify port 3001 is free: lsof -i :3001 && exit 1 || echo 'Port available'
+
+After tests:
+
+- Kill the server you started
+- Verify: pgrep -f 'node.*server.js' || echo 'Cleanup verified'"
+```
+
+### Why this matters
+
+- Stale processes serve requests with wrong config
+- Port conflicts cause silent failures
+- Process accumulation slows the system
+- Confusing test results (hitting wrong server)
+
+## Self-reflection step in subagent prompts
+
+Include the following in every implementer subagent prompt, after the task description:
+
+```text
+When done, BEFORE reporting back:
+
+Take a step back and review your work with fresh eyes.
+
+Ask yourself:
+- Does this actually solve the task as specified?
+- Are there edge cases I didn't consider?
+- Did I follow the pattern correctly?
+- If tests are failing, what's the ROOT CAUSE (implementation bug vs test bug)?
+- What could be better about this implementation?
+
+If you identify issues during this reflection, fix them now.
+
+Then report:
+- What you implemented
+- Self-reflection findings (if any)
+- Test results
+- Files changed
+```
+
+**Why this works:**
+Catches bugs the implementer can find themselves before handoff. Documented case: identified an entrypoint bug through self-reflection that would otherwise have been handed off to review.
+
+**Trade-off:**
+Adds ~30 seconds per task, but catches issues before the review stage.
+
+## Skills reading requirement for test subagents
+
+When the task involves writing or modifying tests, include this block in the implementer prompt:
+
+```markdown
+BEFORE writing any tests:
+
+1. Read the testing-anti-patterns skill:
+   Use Skill tool: superpowers:testing-anti-patterns
+
+2. Apply gate functions from that skill when:
+   - Writing mocks
+   - Adding methods to production classes
+   - Mocking dependencies
+
+This is NOT optional. Tests that violate anti-patterns will be rejected in review.
+```
+
+**Why this works:**
+Ensures skills are actually used, not merely available. Test subagents that skip this step frequently produce mocks derived from the implementation rather than the interface, which is a documented source of runtime crashes.
+
+**Trade-off:**
+Adds time to tasks involving tests, but prevents entire classes of bugs (false-passing tests, runtime method-not-found errors).
+
 ## Agents
 
 - `agents/implementer.md` - Prompt template for dispatching an implementer subagent

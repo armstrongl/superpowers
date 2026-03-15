@@ -23,6 +23,35 @@ Dispatch `supapowers:code-reviewer` subagent to catch issues before they cascade
 - Before refactoring (baseline check)
 - After fixing complex bug
 
+## Files to review / explicit file reading
+
+BEFORE dispatching the code-reviewer subagent, include an explicit list of files in the prompt:
+
+1. List specific files that changed in the diff
+2. List files referenced by changes but not modified
+
+Include this block in the reviewer prompt:
+
+```markdown
+BEFORE analyzing, read these files:
+
+1. [List specific files that changed in the diff]
+2. [Files referenced by changes but not modified]
+
+Use the Read tool to load each file.
+
+If you cannot find a file:
+
+- Check the exact path from the diff
+- Try alternate locations
+- Report: "Cannot locate [path] - please verify file exists"
+
+DO NOT proceed with review until you have read the actual code.
+```
+
+**Why this matters:**
+Reviewer subagents operate in fresh context and cannot assume files are accessible. Explicit file reading prevents "file not found" failures that produce incomplete or skipped reviews.
+
 ## How to request
 
 **1. Get git SHAs:**
