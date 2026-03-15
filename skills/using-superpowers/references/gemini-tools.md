@@ -1,9 +1,9 @@
-# Gemini CLI Tool Mapping
+# Gemini CLI tool mapping
 
 Skills use Claude Code tool names. When you encounter these in a skill, use your platform equivalent:
 
 | Skill references | Gemini CLI equivalent |
-|-----------------|----------------------|
+| ----------------- | ---------------------- |
 | `Read` (file reading) | `read_file` |
 | `Write` (file creation) | `write_file` |
 | `Edit` (file editing) | `replace` |
@@ -25,9 +25,9 @@ Gemini CLI has no equivalent to Claude Code's `Task` tool. Skills that rely on s
 These tools are available in Gemini CLI but have no Claude Code equivalent:
 
 | Tool | Purpose |
-|------|---------|
+| ------ | --------- |
 | `list_directory` | List files and subdirectories |
-| `save_memory` | Persist facts to GEMINI.md across sessions |
+| `save_memory` | Persist facts to Gemini.md across sessions |
 | `ask_user` | Request structured input from the user |
 | `tracker_create_task` | Rich task management (create, update, list, visualize) |
 | `enter_plan_mode` / `exit_plan_mode` | Switch to read-only research mode before making changes |

@@ -1,4 +1,4 @@
-# Document Review System Implementation Plan
+# Document review system implementation plan
 
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan.
 
@@ -12,19 +12,20 @@
 
 ---
 
-## Chunk 1: Spec Document Reviewer
+## Chunk 1: spec document reviewer
 
 This chunk adds the spec document reviewer to the brainstorming skill.
 
-### Task 1: Create Spec Document Reviewer Prompt Template
+### Task 1: create spec document reviewer prompt template
 
 **Files:**
+
 - Create: `skills/brainstorming/spec-document-reviewer-prompt.md`
 
 - [ ] **Step 1:** Create the reviewer prompt template file
 
 ```markdown
-# Spec Document Reviewer Prompt Template
+# Spec document reviewer prompt template
 
 Use this template when dispatching a spec document reviewer subagent.
 
@@ -33,6 +34,7 @@ Use this template when dispatching a spec document reviewer subagent.
 **Dispatch after:** Spec document is written to docs/superpowers/specs/
 
 ```
+
 Task tool (general-purpose):
   description: "Review spec document"
   prompt: |
@@ -68,7 +70,8 @@ Task tool (general-purpose):
 
     **Recommendations (advisory):**
     - [suggestions that don't block approval]
-```
+
+```text
 
 **Reviewer returns:** Status, Issues (if any), Recommendations
 ```
@@ -87,9 +90,10 @@ git commit -m "feat: add spec document reviewer prompt template"
 
 ---
 
-### Task 2: Add Review Loop to Brainstorming Skill
+### Task 2: add review loop to brainstorming skill
 
 **Files:**
+
 - Modify: `skills/brainstorming/SKILL.md`
 
 - [ ] **Step 1:** Read the current brainstorming skill
@@ -103,6 +107,7 @@ Find the "After the Design" section and add a new "Spec Review Loop" section aft
 ```markdown
 **Spec Review Loop:**
 After writing the spec document:
+
 1. Dispatch spec-document-reviewer subagent (see spec-document-reviewer-prompt.md)
 2. If ❌ Issues Found:
    - Fix the issues in the spec document
@@ -111,6 +116,7 @@ After writing the spec document:
 3. If ✅ Approved: proceed to implementation setup
 
 **Review loop guidance:**
+
 - Same agent that wrote the spec fixes it (preserves context)
 - If loop exceeds 5 iterations, surface to human for guidance
 - Reviewers are advisory - explain disagreements if you believe feedback is incorrect
@@ -130,19 +136,20 @@ git commit -m "feat: add spec review loop to brainstorming skill"
 
 ---
 
-## Chunk 2: Plan Document Reviewer
+## Chunk 2: plan document reviewer
 
 This chunk adds the plan document reviewer to the writing-plans skill.
 
-### Task 3: Create Plan Document Reviewer Prompt Template
+### Task 3: create plan document reviewer prompt template
 
 **Files:**
+
 - Create: `skills/writing-plans/plan-document-reviewer-prompt.md`
 
 - [ ] **Step 1:** Create the reviewer prompt template file
 
 ```markdown
-# Plan Document Reviewer Prompt Template
+# Plan document reviewer prompt template
 
 Use this template when dispatching a plan document reviewer subagent.
 
@@ -151,6 +158,7 @@ Use this template when dispatching a plan document reviewer subagent.
 **Dispatch after:** Each plan chunk is written
 
 ```
+
 Task tool (general-purpose):
   description: "Review plan chunk N"
   prompt: |
@@ -188,7 +196,8 @@ Task tool (general-purpose):
 
     **Recommendations (advisory):**
     - [suggestions that don't block approval]
-```
+
+```text
 
 **Reviewer returns:** Status, Issues (if any), Recommendations
 ```
@@ -207,9 +216,10 @@ git commit -m "feat: add plan document reviewer prompt template"
 
 ---
 
-### Task 4: Add Review Loop to Writing-Plans Skill
+### Task 4: add review loop to Writing-Plans skill
 
 **Files:**
+
 - Modify: `skills/writing-plans/SKILL.md`
 
 - [ ] **Step 1:** Read current skill file
@@ -221,7 +231,7 @@ Run: `cat skills/writing-plans/SKILL.md`
 Add before the "Execution Handoff" section:
 
 ```markdown
-## Plan Review Loop
+## Plan review loop
 
 After completing each chunk of the plan:
 
@@ -241,7 +251,7 @@ After completing each chunk of the plan:
 Change the Task Structure section to show checkbox syntax:
 
 ```markdown
-### Task N: [Component Name]
+### Task n: [Component name]
 
 - [ ] **Step 1:** Write the failing test
   - File: `tests/path/test.py`
@@ -267,13 +277,14 @@ git commit -m "feat: add plan review loop and checkbox syntax to writing-plans s
 
 ---
 
-## Chunk 3: Update Plan Document Header
+## Chunk 3: update plan document header
 
 This chunk updates the plan document header template to reference the new checkbox syntax requirements.
 
-### Task 5: Update Plan Header Template in Writing-Plans Skill
+### Task 5: update plan header template in Writing-Plans skill
 
 **Files:**
+
 - Modify: `skills/writing-plans/SKILL.md`
 
 - [ ] **Step 1:** Read current plan header template

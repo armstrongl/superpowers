@@ -1,4 +1,4 @@
-# Svelte Todo List - Design
+# Svelte todo list - design
 
 ## Overview
 
@@ -14,9 +14,9 @@ A simple todo list application built with Svelte. Supports creating, completing,
 - Persist to localStorage
 - Show count of remaining items
 
-## User Interface
+## User interface
 
-```
+```text
 ┌─────────────────────────────────────────┐
 │  Svelte Todos                           │
 ├─────────────────────────────────────────┤
@@ -33,7 +33,7 @@ A simple todo list application built with Svelte. Supports creating, completing,
 
 ## Components
 
-```
+```text
 src/
   App.svelte           # Main app, state management
   lib/
@@ -45,7 +45,7 @@ src/
     storage.ts         # localStorage persistence
 ```
 
-## Data Model
+## Data model
 
 ```typescript
 interface Todo {
@@ -57,7 +57,7 @@ interface Todo {
 type Filter = 'all' | 'active' | 'completed';
 ```
 
-## Acceptance Criteria
+## Acceptance criteria
 
 1. Can add a todo by typing and pressing Enter or clicking Add
 2. Can toggle todo completion by clicking checkbox

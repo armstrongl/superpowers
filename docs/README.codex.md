@@ -1,16 +1,16 @@
-# Superpowers for Codex
+# Superpowers for codex
 
 Guide for using Superpowers with OpenAI Codex via native skill discovery.
 
-## Quick Install
+## Quick install
 
 Tell Codex:
 
-```
+```text
 Fetch and follow instructions from https://raw.githubusercontent.com/armstrongl/superpowers/refs/heads/main/.codex/INSTALL.md
 ```
 
-## Manual Installation
+## Manual installation
 
 ### Prerequisites
 
@@ -20,11 +20,13 @@ Fetch and follow instructions from https://raw.githubusercontent.com/armstrongl/
 ### Steps
 
 1. Clone the repo:
+
    ```bash
    git clone https://github.com/armstrongl/superpowers.git ~/.codex/superpowers
    ```
 
 2. Create the skills symlink:
+
    ```bash
    mkdir -p ~/.agents/skills
    ln -s ~/.codex/superpowers/skills ~/.agents/skills/superpowers
@@ -33,6 +35,7 @@ Fetch and follow instructions from https://raw.githubusercontent.com/armstrongl/
 3. Restart Codex.
 
 4. **For subagent skills** (optional): Skills like `dispatching-parallel-agents` and `subagent-driven-development` require Codex's collab feature. Add to your Codex config:
+
    ```toml
    [features]
    collab = true
@@ -47,11 +50,11 @@ New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.agents\skills"
 cmd /c mklink /J "$env:USERPROFILE\.agents\skills\superpowers" "$env:USERPROFILE\.codex\superpowers\skills"
 ```
 
-## How It Works
+## How it works
 
 Codex has native skill discovery — it scans `~/.agents/skills/` at startup, parses SKILL.md frontmatter, and loads skills on demand. Superpowers skills are made visible through a single symlink:
 
-```
+```text
 ~/.agents/skills/superpowers/ → ~/.codex/superpowers/skills/
 ```
 
@@ -60,11 +63,12 @@ The `using-superpowers` skill is discovered automatically and enforces skill usa
 ## Usage
 
 Skills are discovered automatically. Codex activates them when:
+
 - You mention a skill by name (e.g., "use brainstorming")
 - The task matches a skill's description
 - The `using-superpowers` skill directs Codex to use one
 
-### Personal Skills
+### Personal skills
 
 Create your own skills in `~/.agents/skills/`:
 
@@ -76,11 +80,11 @@ Create `~/.agents/skills/my-skill/SKILL.md`:
 
 ```markdown
 ---
-name: my-skill
 description: Use when [condition] - [what it does]
+name: my-skill
 ---
 
-# My Skill
+# My skill
 
 [Your skill content here]
 ```
@@ -102,6 +106,7 @@ rm ~/.agents/skills/superpowers
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 Remove-Item "$env:USERPROFILE\.agents\skills\superpowers"
 ```
@@ -120,7 +125,7 @@ Optionally delete the clone: `rm -rf ~/.codex/superpowers` (Windows: `Remove-Ite
 
 Junctions normally work without special permissions. If creation fails, try running PowerShell as administrator.
 
-## Getting Help
+## Getting help
 
-- Report issues: https://github.com/armstrongl/superpowers/issues
-- Main documentation: https://github.com/armstrongl/superpowers
+- Report issues: https://GitHub.com/armstrongl/superpowers/issues
+- Main documentation: https://GitHub.com/armstrongl/superpowers

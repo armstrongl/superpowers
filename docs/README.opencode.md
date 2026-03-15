@@ -1,20 +1,20 @@
 # Superpowers for OpenCode
 
-Complete guide for using Superpowers with [OpenCode.ai](https://opencode.ai).
+Complete guide for using Superpowers with [OpenCode.AI](https://opencode.ai).
 
-## Quick Install
+## Quick install
 
 Tell OpenCode:
 
-```
+```text
 Clone https://github.com/armstrongl/superpowers to ~/.config/opencode/superpowers, then create directory ~/.config/opencode/plugins, then symlink ~/.config/opencode/superpowers/.opencode/plugins/superpowers.js to ~/.config/opencode/plugins/superpowers.js, then symlink ~/.config/opencode/superpowers/skills to ~/.config/opencode/skills/superpowers, then restart opencode.
 ```
 
-## Manual Installation
+## Manual installation
 
 ### Prerequisites
 
-- [OpenCode.ai](https://opencode.ai) installed
+- [OpenCode.AI](https://opencode.ai) installed
 - Git installed
 
 ### macOS / Linux
@@ -41,7 +41,7 @@ ln -s ~/.config/opencode/superpowers/skills ~/.config/opencode/skills/superpower
 # 5. Restart OpenCode
 ```
 
-#### Verify Installation
+#### Verify installation
 
 ```bash
 ls -l ~/.config/opencode/plugins/superpowers.js
@@ -53,6 +53,7 @@ Both should show symlinks pointing to the superpowers directory.
 ### Windows
 
 **Prerequisites:**
+
 - Git installed
 - Either **Developer Mode** enabled OR **Administrator privileges**
   - Windows 10: Settings → Update & Security → For developers
@@ -60,7 +61,7 @@ Both should show symlinks pointing to the superpowers directory.
 
 Pick your shell below: [Command Prompt](#command-prompt) | [PowerShell](#powershell) | [Git Bash](#git-bash)
 
-#### Command Prompt
+#### Command prompt
 
 Run as Administrator, or with Developer Mode enabled:
 
@@ -110,7 +111,7 @@ New-Item -ItemType Junction -Path "$env:USERPROFILE\.config\opencode\skills\supe
 # 6. Restart OpenCode
 ```
 
-#### Git Bash
+#### Git bash
 
 Note: Git Bash's native `ln` command copies files instead of creating symlinks. Use `cmd //c mklink` instead (the `//c` is Git Bash syntax for `/c`).
 
@@ -134,19 +135,21 @@ cmd //c "mklink /J \"$(cygpath -w ~/.config/opencode/skills/superpowers)\" \"$(c
 # 6. Restart OpenCode
 ```
 
-#### WSL Users
+#### WSL users
 
 If running OpenCode inside WSL, use the [macOS / Linux](#macos--linux) instructions instead.
 
-#### Verify Installation
+#### Verify installation
 
 **Command Prompt:**
+
 ```cmd
 dir /AL "%USERPROFILE%\.config\opencode\plugins"
 dir /AL "%USERPROFILE%\.config\opencode\skills"
 ```
 
 **PowerShell:**
+
 ```powershell
 Get-ChildItem "$env:USERPROFILE\.config\opencode\plugins" | Where-Object { $_.LinkType }
 Get-ChildItem "$env:USERPROFILE\.config\opencode\skills" | Where-Object { $_.LinkType }
@@ -157,34 +160,37 @@ Look for `<SYMLINK>` or `<JUNCTION>` in the output.
 #### Troubleshooting Windows
 
 **"You do not have sufficient privilege" error:**
+
 - Enable Developer Mode in Windows Settings, OR
 - Right-click your terminal → "Run as Administrator"
 
 **"Cannot create a file when that file already exists":**
+
 - Run the removal commands (step 3) first, then retry
 
 **Symlinks not working after git clone:**
+
 - Run `git config --global core.symlinks true` and re-clone
 
 ## Usage
 
-### Finding Skills
+### Finding skills
 
 Use OpenCode's native `skill` tool to list all available skills:
 
-```
+```text
 use skill tool to list skills
 ```
 
-### Loading a Skill
+### Loading a skill
 
 Use OpenCode's native `skill` tool to load a specific skill:
 
-```
+```text
 use skill tool to load superpowers/brainstorming
 ```
 
-### Personal Skills
+### Personal skills
 
 Create your own skills in `~/.config/opencode/skills/`:
 
@@ -196,16 +202,16 @@ Create `~/.config/opencode/skills/my-skill/SKILL.md`:
 
 ```markdown
 ---
-name: my-skill
 description: Use when [condition] - [what it does]
+name: my-skill
 ---
 
-# My Skill
+# My skill
 
 [Your skill content here]
 ```
 
-### Project Skills
+### Project skills
 
 Create project-specific skills in your OpenCode project:
 
@@ -218,16 +224,16 @@ Create `.opencode/skills/my-project-skill/SKILL.md`:
 
 ```markdown
 ---
-name: my-project-skill
 description: Use when [condition] - [what it does]
+name: my-project-skill
 ---
 
-# My Project Skill
+# My project skill
 
 [Your skill content here]
 ```
 
-## Skill Locations
+## Skill locations
 
 OpenCode discovers skills from these locations:
 
@@ -237,15 +243,15 @@ OpenCode discovers skills from these locations:
 
 ## Features
 
-### Automatic Context Injection
+### Automatic context injection
 
 The plugin automatically injects superpowers context via the `experimental.chat.system.transform` hook. This adds the "using-superpowers" skill content to the system prompt on every request.
 
-### Native Skills Integration
+### Native skills integration
 
 Superpowers uses OpenCode's native `skill` tool for skill discovery and loading. Skills are symlinked into `~/.config/opencode/skills/superpowers/` so they appear alongside your personal and project skills.
 
-### Tool Mapping
+### Tool mapping
 
 Skills written for Claude Code are automatically adapted for OpenCode. The bootstrap provides mapping instructions:
 
@@ -256,11 +262,12 @@ Skills written for Claude Code are automatically adapted for OpenCode. The boots
 
 ## Architecture
 
-### Plugin Structure
+### Plugin structure
 
 **Location:** `~/.config/opencode/superpowers/.opencode/plugins/superpowers.js`
 
 **Components:**
+
 - `experimental.chat.system.transform` hook for bootstrap injection
 - Reads and injects the "using-superpowers" skill content
 
@@ -294,9 +301,10 @@ Restart OpenCode to load the updates.
 2. Use OpenCode's `skill` tool to list available skills
 3. Check skill structure: each skill needs a `SKILL.md` file with valid frontmatter
 
-### Windows: Module not found error
+### Windows: module not found error
 
 If you see `Cannot find module` errors on Windows:
+
 - **Cause:** Git Bash `ln -sf` copies files instead of creating symlinks
 - **Fix:** Use `mklink /J` directory junctions instead (see Windows installation steps)
 
@@ -306,11 +314,11 @@ If you see `Cannot find module` errors on Windows:
 2. Check OpenCode version supports `experimental.chat.system.transform` hook
 3. Restart OpenCode after plugin changes
 
-## Getting Help
+## Getting help
 
-- Report issues: https://github.com/armstrongl/superpowers/issues
-- Main documentation: https://github.com/armstrongl/superpowers
-- OpenCode docs: https://opencode.ai/docs/
+- Report issues: https://GitHub.com/armstrongl/superpowers/issues
+- Main documentation: https://GitHub.com/armstrongl/superpowers
+- OpenCode docs: https://opencode.AI/docs/
 
 ## Testing
 

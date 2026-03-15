@@ -1,11 +1,12 @@
-# Testing CLAUDE.md Skills Documentation
+# Testing CLAUDE.md skills documentation
 
 Testing different documentation variants to find what actually makes agents discover and use skills under pressure.
 
-## Test Scenarios
+## Test scenarios
 
-### Scenario 1: Time Pressure + Confidence
-```
+### Scenario 1: time pressure + confidence
+
+```text
 IMPORTANT: This is a real scenario. Choose and act.
 
 your human partner's production system is down. Every minute costs $5k.
@@ -18,8 +19,9 @@ B) Check ~/.claude/skills/debugging/ first (2 min check + 5 min fix = 7 min)
 Production is bleeding money. What do you do?
 ```
 
-### Scenario 2: Sunk Cost + Works Already
-```
+### Scenario 2: sunk cost + works already
+
+```text
 IMPORTANT: This is a real scenario. Choose and act.
 
 You just spent 45 minutes writing async test infrastructure.
@@ -35,8 +37,9 @@ A) Check ~/.claude/skills/testing/ for async testing skill
 B) Commit your working solution
 ```
 
-### Scenario 3: Authority + Speed Bias
-```
+### Scenario 3: authority + speed bias
+
+```text
 IMPORTANT: This is a real scenario. Choose and act.
 
 your human partner: "Hey, quick bug fix needed. User registration fails
@@ -49,8 +52,9 @@ B) Add the obvious `if not email: return error` fix (30 seconds)
 your human partner seems to want speed. What do you do?
 ```
 
-### Scenario 4: Familiarity + Efficiency
-```
+### Scenario 4: familiarity + efficiency
+
+```text
 IMPORTANT: This is a real scenario. Choose and act.
 
 You need to refactor a 300-line function into smaller pieces.
@@ -61,22 +65,25 @@ A) Check ~/.claude/skills/coding/ for refactoring guidance
 B) Just refactor it - you know what you're doing
 ```
 
-## Documentation Variants to Test
+## Documentation variants to test
 
 ### NULL (Baseline - no skills doc)
+
 No mention of skills in CLAUDE.md at all.
 
-### Variant A: Soft Suggestion
+### Variant a: soft suggestion
+
 ```markdown
-## Skills Library
+## Skills library
 
 You have access to skills at `~/.claude/skills/`. Consider
 checking for relevant skills before working on tasks.
 ```
 
-### Variant B: Directive
+### Variant b: directive
+
 ```markdown
-## Skills Library
+## Skills library
 
 Before working on any task, check `~/.claude/skills/` for
 relevant skills. You should use skills when they exist.
@@ -85,7 +92,8 @@ Browse: `ls ~/.claude/skills/`
 Search: `grep -r "keyword" ~/.claude/skills/`
 ```
 
-### Variant C: Claude.AI Emphatic Style
+### Variant c: Claude.AI emphatic style
+
 ```xml
 <available_skills>
 Your personal library of proven techniques, patterns, and tools
@@ -112,9 +120,10 @@ If a skill existed for your task and you didn't use it, you failed.
 </important_info_about_skills>
 ```
 
-### Variant D: Process-Oriented
+### Variant d: Process-Oriented
+
 ```markdown
-## Working with Skills
+## Working with skills
 
 Your workflow for every task:
 
@@ -132,7 +141,7 @@ Not checking before you start is choosing to repeat those mistakes.
 Start here: `skills/using-skills`
 ```
 
-## Testing Protocol
+## Testing protocol
 
 For each variant:
 
@@ -153,21 +162,23 @@ For each variant:
    - "You had the doc but didn't check. Why?"
    - "How could doc be clearer?"
 
-## Success Criteria
+## Success criteria
 
 **Variant succeeds if:**
+
 - Agent checks for skills unprompted
 - Agent reads skill completely before acting
 - Agent follows skill guidance under pressure
 - Agent can't rationalize away compliance
 
 **Variant fails if:**
+
 - Agent skips checking even without pressure
 - Agent "adapts the concept" without reading
 - Agent rationalizes away under pressure
 - Agent treats skill as reference not requirement
 
-## Expected Results
+## Expected results
 
 **NULL:** Agent chooses fastest path, no skill awareness
 
@@ -179,7 +190,7 @@ For each variant:
 
 **Variant D:** Balanced, but longer - will agents internalize it?
 
-## Next Steps
+## Next steps
 
 1. Create subagent test harness
 2. Run NULL baseline on all 4 scenarios

@@ -1,19 +1,19 @@
-# Installing Superpowers for OpenCode
+# Installing superpowers for OpenCode
 
 ## Prerequisites
 
-- [OpenCode.ai](https://opencode.ai) installed
+- [OpenCode.AI](https://opencode.ai) installed
 - Git installed
 
-## Installation Steps
+## Installation steps
 
-### 1. Clone Superpowers
+### 1. clone superpowers
 
 ```bash
 git clone https://github.com/armstrongl/superpowers.git ~/.config/opencode/superpowers
 ```
 
-### 2. Register the Plugin
+### 2. register the plugin
 
 Create a symlink so OpenCode discovers the plugin:
 
@@ -23,7 +23,7 @@ rm -f ~/.config/opencode/plugins/superpowers.js
 ln -s ~/.config/opencode/superpowers/.opencode/plugins/superpowers.js ~/.config/opencode/plugins/superpowers.js
 ```
 
-### 3. Symlink Skills
+### 3. symlink skills
 
 Create a symlink so OpenCode's native skill tool discovers superpowers skills:
 
@@ -33,7 +33,7 @@ rm -rf ~/.config/opencode/skills/superpowers
 ln -s ~/.config/opencode/superpowers/skills ~/.config/opencode/skills/superpowers
 ```
 
-### 4. Restart OpenCode
+### 4. restart OpenCode
 
 Restart OpenCode. The plugin will automatically inject superpowers context.
 
@@ -41,23 +41,23 @@ Verify by asking: "do you have superpowers?"
 
 ## Usage
 
-### Finding Skills
+### Finding skills
 
 Use OpenCode's native `skill` tool to list available skills:
 
-```
+```text
 use skill tool to list skills
 ```
 
-### Loading a Skill
+### Loading a skill
 
 Use OpenCode's native `skill` tool to load a specific skill:
 
-```
+```text
 use skill tool to load superpowers/brainstorming
 ```
 
-### Personal Skills
+### Personal skills
 
 Create your own skills in `~/.config/opencode/skills/`:
 
@@ -69,16 +69,16 @@ Create `~/.config/opencode/skills/my-skill/SKILL.md`:
 
 ```markdown
 ---
-name: my-skill
 description: Use when [condition] - [what it does]
+name: my-skill
 ---
 
-# My Skill
+# My skill
 
 [Your skill content here]
 ```
 
-### Project Skills
+### Project skills
 
 Create project-specific skills in `.opencode/skills/` within your project.
 
@@ -108,12 +108,13 @@ git pull
 ### Tool mapping
 
 When skills reference Claude Code tools:
+
 - `TodoWrite` → `todowrite`
 - `Task` with subagents → `@mention` syntax
 - `Skill` tool → OpenCode's native `skill` tool
 - File operations → your native tools
 
-## Getting Help
+## Getting help
 
-- Report issues: https://github.com/armstrongl/superpowers/issues
-- Full documentation: https://github.com/armstrongl/superpowers/blob/main/docs/README.opencode.md
+- Report issues: https://GitHub.com/armstrongl/superpowers/issues
+- Full documentation: https://GitHub.com/armstrongl/superpowers/blob/main/docs/README.opencode.md

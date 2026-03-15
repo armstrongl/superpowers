@@ -1,8 +1,8 @@
-# OpenCode Support Implementation Plan
+# OpenCode support implementation plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Add full superpowers support for OpenCode.ai with a native JavaScript plugin that shares core functionality with the existing Codex implementation.
+**Goal:** Add full superpowers support for OpenCode.AI with a native JavaScript plugin that shares core functionality with the existing Codex implementation.
 
 **Architecture:** Extract common skill discovery/parsing logic into `lib/skills-core.js`, refactor Codex to use it, then build OpenCode plugin using their native plugin API with custom tools and session hooks.
 
@@ -10,11 +10,12 @@
 
 ---
 
-## Phase 1: Create Shared Core Module
+## Phase 1: create shared core module
 
-### Task 1: Extract Frontmatter Parsing
+### Task 1: extract frontmatter parsing
 
 **Files:**
+
 - Create: `lib/skills-core.js`
 - Reference: `.codex/superpowers-codex` (lines 40-74)
 
@@ -94,9 +95,10 @@ git commit -m "feat: create shared skills core module with frontmatter parser"
 
 ---
 
-### Task 2: Extract Skill Discovery Logic
+### Task 2: extract skill discovery logic
 
 **Files:**
+
 - Modify: `lib/skills-core.js`
 - Reference: `.codex/superpowers-codex` (lines 97-136)
 
@@ -176,9 +178,10 @@ git commit -m "feat: add skill discovery function to core module"
 
 ---
 
-### Task 3: Extract Skill Resolution Logic
+### Task 3: extract skill resolution logic
 
 **Files:**
+
 - Modify: `lib/skills-core.js`
 - Reference: `.codex/superpowers-codex` (lines 212-280)
 
@@ -255,9 +258,10 @@ git commit -m "feat: add skill path resolution with shadowing support"
 
 ---
 
-### Task 4: Extract Update Check Logic
+### Task 4: extract update check logic
 
 **Files:**
+
 - Modify: `lib/skills-core.js`
 - Reference: `.codex/superpowers-codex` (lines 16-38)
 
@@ -328,11 +332,12 @@ git commit -m "feat: add git update checking to core module"
 
 ---
 
-## Phase 2: Refactor Codex to Use Shared Core
+## Phase 2: refactor codex to use shared core
 
-### Task 5: Update Codex to Import Shared Core
+### Task 5: update codex to import shared core
 
 **Files:**
+
 - Modify: `.codex/superpowers-codex` (add import at top)
 
 **Step 1: Add import statement**
@@ -357,9 +362,10 @@ git commit -m "refactor: import shared skills core in codex"
 
 ---
 
-### Task 6: Replace extractFrontmatter with Core Version
+### Task 6: replace extractFrontmatter with core version
 
 **Files:**
+
 - Modify: `.codex/superpowers-codex` (lines 40-74)
 
 **Step 1: Remove local extractFrontmatter function**
@@ -386,9 +392,10 @@ git commit -m "refactor: use shared extractFrontmatter in codex"
 
 ---
 
-### Task 7: Replace findSkillsInDir with Core Version
+### Task 7: replace findSkillsInDir with core version
 
 **Files:**
+
 - Modify: `.codex/superpowers-codex` (lines 97-136, approximately)
 
 **Step 1: Remove local findSkillsInDir function**
@@ -413,9 +420,10 @@ git commit -m "refactor: use shared findSkillsInDir in codex"
 
 ---
 
-### Task 8: Replace checkForUpdates with Core Version
+### Task 8: replace checkForUpdates with core version
 
 **Files:**
+
 - Modify: `.codex/superpowers-codex` (lines 16-38, approximately)
 
 **Step 1: Remove local checkForUpdates function**
@@ -440,11 +448,12 @@ git commit -m "refactor: use shared checkForUpdates in codex"
 
 ---
 
-## Phase 3: Build OpenCode Plugin
+## Phase 3: build OpenCode plugin
 
-### Task 9: Create OpenCode Plugin Directory Structure
+### Task 9: create OpenCode plugin directory structure
 
 **Files:**
+
 - Create: `.opencode/plugin/superpowers.js`
 
 **Step 1: Create directory**
@@ -496,9 +505,10 @@ git commit -m "feat: create opencode plugin scaffold"
 
 ---
 
-### Task 10: Implement use_skill Tool
+### Task 10: implement use_skill tool
 
 **Files:**
+
 - Modify: `.opencode/plugin/superpowers.js`
 
 **Step 1: Add use_skill tool implementation**
@@ -586,9 +596,10 @@ git commit -m "feat: implement use_skill tool for opencode"
 
 ---
 
-### Task 11: Implement find_skills Tool
+### Task 11: implement find_skills tool
 
 **Files:**
+
 - Modify: `.opencode/plugin/superpowers.js`
 
 **Step 1: Add find_skills tool to tools array**
@@ -652,9 +663,10 @@ git commit -m "feat: implement find_skills tool for opencode"
 
 ---
 
-### Task 12: Implement Session Start Hook
+### Task 12: implement session start hook
 
 **Files:**
+
 - Modify: `.opencode/plugin/superpowers.js`
 
 **Step 1: Add session.started hook**
@@ -755,27 +767,28 @@ git commit -m "feat: implement session.started hook for opencode"
 
 ---
 
-## Phase 4: Documentation
+## Phase 4: documentation
 
-### Task 13: Create OpenCode Installation Guide
+### Task 13: create OpenCode installation guide
 
 **Files:**
+
 - Create: `.opencode/INSTALL.md`
 
 **Step 1: Create installation guide**
 
 ```markdown
-# Installing Superpowers for OpenCode
+# Installing superpowers for OpenCode
 
 ## Prerequisites
 
-- [OpenCode.ai](https://opencode.ai) installed
+- [OpenCode.AI](https://opencode.ai) installed
 - Node.js installed
 - Git installed
 
-## Installation Steps
+## Installation steps
 
-### 1. Install Superpowers Skills
+### 1. install superpowers skills
 
 ```bash
 # Clone superpowers skills to OpenCode config directory
@@ -783,11 +796,12 @@ mkdir -p ~/.config/opencode/superpowers
 git clone https://github.com/obra/superpowers.git ~/.config/opencode/superpowers
 ```
 
-### 2. Install the Plugin
+### 2. install the plugin
 
 The plugin is included in the superpowers repository you just cloned.
 
 OpenCode will automatically discover it from:
+
 - `~/.config/opencode/superpowers/.opencode/plugin/superpowers.js`
 
 Or you can link it to the project-local plugin directory:
@@ -798,33 +812,33 @@ mkdir -p .opencode/plugin
 ln -s ~/.config/opencode/superpowers/.opencode/plugin/superpowers.js .opencode/plugin/superpowers.js
 ```
 
-### 3. Restart OpenCode
+### 3. restart OpenCode
 
 Restart OpenCode to load the plugin. On the next session, you should see:
 
-```
+```text
 You have superpowers.
 ```
 
 ## Usage
 
-### Finding Skills
+### Finding skills
 
 Use the `find_skills` tool to list all available skills:
 
-```
+```text
 use find_skills tool
 ```
 
-### Loading a Skill
+### Loading a skill
 
 Use the `use_skill` tool to load a specific skill:
 
-```
+```text
 use use_skill tool with skill_name: "superpowers:brainstorming"
 ```
 
-### Personal Skills
+### Personal skills
 
 Create your own skills in `~/.config/opencode/skills/`:
 
@@ -836,11 +850,11 @@ Create `~/.config/opencode/skills/my-skill/SKILL.md`:
 
 ```markdown
 ---
-name: my-skill
 description: Use when [condition] - [what it does]
+name: my-skill
 ---
 
-# My Skill
+# My skill
 
 [Your skill content here]
 ```
@@ -871,16 +885,18 @@ git pull
 ### Tool mapping issues
 
 When a skill references a Claude Code tool you don't have:
+
 - `TodoWrite` → use `update_plan`
 - `Task` with subagents → use `@mention` syntax to invoke OpenCode subagents
 - `Skill` → use `use_skill` tool
 - File operations → use your native tools
 
-## Getting Help
+## Getting help
 
-- Report issues: https://github.com/obra/superpowers/issues
-- Documentation: https://github.com/obra/superpowers
-```
+- Report issues: https://GitHub.com/obra/superpowers/issues
+- Documentation: https://GitHub.com/obra/superpowers
+
+```text
 
 **Step 2: Verify file created**
 
@@ -896,9 +912,10 @@ git commit -m "docs: add opencode installation guide"
 
 ---
 
-### Task 14: Update Main README
+### Task 14: update main README
 
 **Files:**
+
 - Modify: `README.md`
 
 **Step 1: Add OpenCode section**
@@ -908,11 +925,12 @@ Find the section about supported platforms (search for "Codex" in the file), and
 ```markdown
 ### OpenCode
 
-Superpowers works with [OpenCode.ai](https://opencode.ai) through a native JavaScript plugin.
+Superpowers works with [OpenCode.AI](https://opencode.ai) through a native JavaScript plugin.
 
 **Installation:** See [.opencode/INSTALL.md](.opencode/INSTALL.md)
 
 **Features:**
+
 - Custom tools: `use_skill` and `find_skills`
 - Automatic session bootstrap
 - Personal skills with shadowing
@@ -933,9 +951,10 @@ git commit -m "docs: add opencode support to readme"
 
 ---
 
-### Task 15: Update Release Notes
+### Task 15: update release notes
 
 **Files:**
+
 - Modify: `RELEASE-NOTES.md`
 
 **Step 1: Add entry for OpenCode support**
@@ -947,7 +966,7 @@ At the top of the file (after the header), add:
 
 ### Added
 
-- **OpenCode Support**: Native JavaScript plugin for OpenCode.ai
+- **OpenCode Support**: Native JavaScript plugin for OpenCode.AI
   - Custom tools: `use_skill` and `find_skills`
   - Automatic session bootstrap with tool mapping instructions
   - Shared core module (`lib/skills-core.js`) for code reuse
@@ -977,11 +996,12 @@ git commit -m "docs: add opencode support to release notes"
 
 ---
 
-## Phase 5: Final Verification
+## Phase 5: final verification
 
-### Task 16: Test Codex Still Works
+### Task 16: test codex still works
 
 **Files:**
+
 - Test: `.codex/superpowers-codex`
 
 **Step 1: Test find-skills command**
@@ -1005,14 +1025,16 @@ No commit needed - this is verification only.
 
 ---
 
-### Task 17: Verify File Structure
+### Task 17: verify file structure
 
 **Files:**
+
 - Check: All new files exist
 
 **Step 1: Verify all files created**
 
 Run:
+
 ```bash
 ls -l lib/skills-core.js
 ls -l .opencode/plugin/superpowers.js
@@ -1025,7 +1047,8 @@ Expected: All files exist
 
 Run: `tree -L 2 .opencode/` (or `find .opencode -type f` if tree not available)
 Expected:
-```
+
+```text
 .opencode/
 ├── INSTALL.md
 └── plugin/
@@ -1038,9 +1061,10 @@ No commit needed - this is verification only.
 
 ---
 
-### Task 18: Final Commit and Summary
+### Task 18: final commit and summary
 
 **Files:**
+
 - Check: `git status`
 
 **Step 1: Check git status**
@@ -1056,6 +1080,7 @@ Expected: Shows all commits from this implementation
 **Step 3: Create summary document**
 
 Create a completion summary showing:
+
 - Total commits made
 - Files created: `lib/skills-core.js`, `.opencode/plugin/superpowers.js`, `.opencode/INSTALL.md`
 - Files modified: `.codex/superpowers-codex`, `README.md`, `RELEASE-NOTES.md`
@@ -1065,13 +1090,14 @@ Create a completion summary showing:
 **Step 4: Report completion**
 
 Present summary to user and offer to:
+
 1. Push to remote
 2. Create pull request
 3. Test with real OpenCode installation (requires OpenCode installed)
 
 ---
 
-## Testing Guide (Manual - Requires OpenCode)
+## Testing guide (Manual - requires OpenCode)
 
 These steps require OpenCode to be installed and are not part of the automated implementation:
 
@@ -1083,7 +1109,7 @@ These steps require OpenCode to be installed and are not part of the automated i
 6. **Test personal skills**: Create a personal skill and verify it shadows core
 7. **Test tool mapping**: Verify TodoWrite → update_plan mapping works
 
-## Success Criteria
+## Success criteria
 
 - [ ] `lib/skills-core.js` created with all core functions
 - [ ] `.codex/superpowers-codex` refactored to use shared core

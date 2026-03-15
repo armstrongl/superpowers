@@ -1,4 +1,4 @@
-# Go Fractals CLI - Design
+# Go fractals CLI - design
 
 ## Overview
 
@@ -28,6 +28,7 @@ fractals sierpinski --help
 Generates a Sierpinski triangle using recursive subdivision.
 
 Flags:
+
 - `--size` (default: 32) - Width of the triangle base in characters
 - `--depth` (default: 5) - Recursion depth
 - `--char` (default: '*') - Character to use for filled points
@@ -39,6 +40,7 @@ Output: Triangle printed to stdout, one line per row.
 Renders the Mandelbrot set as ASCII art. Maps iteration count to characters.
 
 Flags:
+
 - `--width` (default: 80) - Output width in characters
 - `--height` (default: 24) - Output height in characters
 - `--iterations` (default: 100) - Maximum iterations for escape calculation
@@ -48,7 +50,7 @@ Output: Rectangle printed to stdout.
 
 ## Architecture
 
-```
+```text
 cmd/
   fractals/
     main.go           # Entry point, CLI setup
@@ -70,7 +72,7 @@ internal/
 - Go 1.21+
 - `github.com/spf13/cobra` for CLI
 
-## Acceptance Criteria
+## Acceptance criteria
 
 1. `fractals --help` shows usage
 2. `fractals sierpinski` outputs a recognizable triangle

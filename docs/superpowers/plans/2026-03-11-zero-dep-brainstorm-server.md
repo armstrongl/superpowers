@@ -1,4 +1,4 @@
-# Zero-Dependency Brainstorm Server Implementation Plan
+# Zero-Dependency brainstorm server implementation plan
 
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -14,7 +14,7 @@
 
 ---
 
-## File Map
+## File map
 
 - **Create:** `skills/brainstorming/scripts/server.js` — the zero-dep replacement
 - **Modify:** `skills/brainstorming/scripts/start-server.sh:94,100` — change `index.js` to `server.js`
@@ -27,11 +27,12 @@
 
 ---
 
-## Chunk 1: WebSocket Protocol Layer
+## Chunk 1: WebSocket protocol layer
 
-### Task 1: Implement WebSocket protocol exports
+### Task 1: implement WebSocket protocol exports
 
 **Files:**
+
 - Create: `skills/brainstorming/scripts/server.js`
 - Test: `tests/brainstorm-server/ws-protocol.test.js` (already exists)
 
@@ -51,6 +52,7 @@ function computeAcceptKey(clientKey) {
 - [ ] **Step 2: Implement encodeFrame**
 
 Server frames are never masked. Three length encodings:
+
 - payload < 126: 2-byte header (FIN+opcode, length)
 - 126-65535: 4-byte header (FIN+opcode, 126, 16-bit length)
 - &gt; 65535: 10-byte header (FIN+opcode, 127, 64-bit length)
@@ -143,11 +145,12 @@ git commit -m "Add WebSocket protocol layer for zero-dep brainstorm server"
 
 ---
 
-## Chunk 2: HTTP Server and Application Logic
+## Chunk 2: HTTP server and application logic
 
-### Task 2: Add HTTP server, file watching, and WebSocket connection handling
+### Task 2: add HTTP server, file watching, and WebSocket connection handling
 
 **Files:**
+
 - Modify: `skills/brainstorming/scripts/server.js`
 - Test: `tests/brainstorm-server/server.test.js` (already exists)
 
@@ -400,11 +403,12 @@ git commit -m "Add HTTP server, WebSocket handling, and file watching to server.
 
 ---
 
-## Chunk 3: Swap and Cleanup
+## Chunk 3: swap and cleanup
 
-### Task 3: Update start-server.sh and remove old files
+### Task 3: update start-server.sh and remove old files
 
 **Files:**
+
 - Modify: `skills/brainstorming/scripts/start-server.sh:94,100`
 - Modify: `.gitignore:6`
 - Delete: `skills/brainstorming/scripts/index.js`
@@ -445,7 +449,7 @@ git add skills/brainstorming/scripts/ .gitignore
 git commit -m "Remove vendored node_modules, swap to zero-dep server.js"
 ```
 
-### Task 4: Manual smoke test
+### Task 4: manual smoke test
 
 - [ ] **Step 1: Start the server manually**
 

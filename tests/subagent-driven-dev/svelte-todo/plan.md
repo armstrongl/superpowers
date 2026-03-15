@@ -1,4 +1,4 @@
-# Svelte Todo List - Implementation Plan
+# Svelte todo list - implementation plan
 
 Execute this plan using the `superpowers:subagent-driven-development` skill.
 
@@ -8,28 +8,31 @@ Building a todo list app with Svelte. See `design.md` for full specification.
 
 ## Tasks
 
-### Task 1: Project Setup
+### Task 1: project setup
 
 Create the Svelte project with Vite.
 
 **Do:**
+
 - Run `npm create vite@latest . -- --template svelte-ts`
 - Install dependencies with `npm install`
 - Verify dev server works
 - Clean up default Vite template content from App.svelte
 
 **Verify:**
+
 - `npm run dev` starts server
 - App shows minimal "Svelte Todos" heading
 - `npm run build` succeeds
 
 ---
 
-### Task 2: Todo Store
+### Task 2: todo store
 
 Create the Svelte store for todo state management.
 
 **Do:**
+
 - Create `src/lib/store.ts`
 - Define `Todo` interface with id, text, completed
 - Create writable store with initial empty array
@@ -37,15 +40,17 @@ Create the Svelte store for todo state management.
 - Create `src/lib/store.test.ts` with tests for each function
 
 **Verify:**
+
 - Tests pass: `npm run test` (install vitest if needed)
 
 ---
 
-### Task 3: localStorage Persistence
+### Task 3: localStorage persistence
 
 Add persistence layer for todos.
 
 **Do:**
+
 - Create `src/lib/storage.ts`
 - Implement `loadTodos(): Todo[]` and `saveTodos(todos: Todo[])`
 - Handle JSON parse errors gracefully (return empty array)
@@ -53,16 +58,18 @@ Add persistence layer for todos.
 - Add tests for load/save/error handling
 
 **Verify:**
+
 - Tests pass
 - Manual test: add todo, refresh page, todo persists
 
 ---
 
-### Task 4: TodoInput Component
+### Task 4: TodoInput component
 
 Create the input component for adding todos.
 
 **Do:**
+
 - Create `src/lib/TodoInput.svelte`
 - Text input bound to local state
 - Add button calls `addTodo()` and clears input
@@ -71,16 +78,18 @@ Create the input component for adding todos.
 - Add component tests
 
 **Verify:**
+
 - Tests pass
 - Component renders input and button
 
 ---
 
-### Task 5: TodoItem Component
+### Task 5: TodoItem component
 
 Create the single todo item component.
 
 **Do:**
+
 - Create `src/lib/TodoItem.svelte`
 - Props: `todo: Todo`
 - Checkbox toggles completion (calls `toggleTodo`)
@@ -89,16 +98,18 @@ Create the single todo item component.
 - Add component tests
 
 **Verify:**
+
 - Tests pass
 - Component renders checkbox, text, delete button
 
 ---
 
-### Task 6: TodoList Component
+### Task 6: TodoList component
 
 Create the list container component.
 
 **Do:**
+
 - Create `src/lib/TodoList.svelte`
 - Props: `todos: Todo[]`
 - Renders TodoItem for each todo
@@ -106,16 +117,18 @@ Create the list container component.
 - Add component tests
 
 **Verify:**
+
 - Tests pass
 - Component renders list of TodoItems
 
 ---
 
-### Task 7: FilterBar Component
+### Task 7: FilterBar component
 
 Create the filter and status bar component.
 
 **Do:**
+
 - Create `src/lib/FilterBar.svelte`
 - Props: `todos: Todo[]`, `filter: Filter`, `onFilterChange: (f: Filter) => void`
 - Show count: "X items left" (incomplete count)
@@ -125,16 +138,18 @@ Create the filter and status bar component.
 - Add component tests
 
 **Verify:**
+
 - Tests pass
 - Component renders count, filters, clear button
 
 ---
 
-### Task 8: App Integration
+### Task 8: app integration
 
 Wire all components together in App.svelte.
 
 **Do:**
+
 - Import all components and store
 - Add filter state (default: 'all')
 - Compute filtered todos based on filter state
@@ -142,6 +157,7 @@ Wire all components together in App.svelte.
 - Pass appropriate props to each component
 
 **Verify:**
+
 - App renders all components
 - Adding todos works
 - Toggling works
@@ -149,11 +165,12 @@ Wire all components together in App.svelte.
 
 ---
 
-### Task 9: Filter Functionality
+### Task 9: filter functionality
 
 Ensure filtering works end-to-end.
 
 **Do:**
+
 - Verify filter buttons change displayed todos
 - 'all' shows all todos
 - 'active' shows only incomplete todos
@@ -162,16 +179,18 @@ Ensure filtering works end-to-end.
 - Add integration tests
 
 **Verify:**
+
 - Filter tests pass
 - Manual verification of all filter states
 
 ---
 
-### Task 10: Styling and Polish
+### Task 10: styling and polish
 
 Add CSS styling for usability.
 
 **Do:**
+
 - Style the app to match the design mockup
 - Completed todos have strikethrough and muted color
 - Active filter button is highlighted
@@ -180,16 +199,18 @@ Add CSS styling for usability.
 - Responsive layout
 
 **Verify:**
+
 - App is visually usable
 - Styles don't break functionality
 
 ---
 
-### Task 11: End-to-End Tests
+### Task 11: End-to-End tests
 
 Add Playwright tests for full user flows.
 
 **Do:**
+
 - Install Playwright: `npm init playwright@latest`
 - Create `tests/todo.spec.ts`
 - Test flows:
@@ -201,6 +222,7 @@ Add Playwright tests for full user flows.
   - Persistence (add, reload, verify)
 
 **Verify:**
+
 - `npx playwright test` passes
 
 ---
@@ -210,6 +232,7 @@ Add Playwright tests for full user flows.
 Document the project.
 
 **Do:**
+
 - Create `README.md` with:
   - Project description
   - Setup: `npm install`
@@ -218,5 +241,6 @@ Document the project.
   - Build: `npm run build`
 
 **Verify:**
+
 - README accurately describes the project
 - Instructions work

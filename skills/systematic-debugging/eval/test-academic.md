@@ -1,4 +1,4 @@
-# Academic Test: Systematic Debugging Skill
+# Academic test: systematic debugging skill
 
 You have access to the systematic debugging skill at skills/debugging/systematic-debugging
 

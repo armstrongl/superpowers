@@ -1,4 +1,4 @@
-# OpenCode Support Design
+# OpenCode support design
 
 **Date:** 2025-11-22
 **Author:** Bot & Jesse
@@ -6,19 +6,19 @@
 
 ## Overview
 
-Add full superpowers support for OpenCode.ai using a native OpenCode plugin architecture that shares core functionality with the existing Codex implementation.
+Add full superpowers support for OpenCode.AI using a native OpenCode plugin architecture that shares core functionality with the existing Codex implementation.
 
 ## Background
 
-OpenCode.ai is a coding agent similar to Claude Code and Codex. Previous attempts to port superpowers to OpenCode (PR #93, PR #116) used file-copying approaches. This design takes a different approach: building a native OpenCode plugin using their JavaScript/TypeScript plugin system while sharing code with the Codex implementation.
+OpenCode.AI is a coding agent similar to Claude Code and Codex. Previous attempts to port superpowers to OpenCode (PR #93, PR #116) used file-copying approaches. This design takes a different approach: building a native OpenCode plugin using their JavaScript/TypeScript plugin system while sharing code with the Codex implementation.
 
-### Key Differences Between Platforms
+### Key differences between platforms
 
 - **Claude Code**: Native Anthropic plugin system + file-based skills
 - **Codex**: No plugin system → bootstrap markdown + CLI script
 - **OpenCode**: JavaScript/TypeScript plugins with event hooks and custom tools API
 
-### OpenCode's Agent System
+### OpenCode's agent system
 
 - **Primary agents**: Build (default, full access) and Plan (restricted, read-only)
 - **Subagents**: General (research, searching, multi-step tasks)
@@ -27,7 +27,7 @@ OpenCode.ai is a coding agent similar to Claude Code and Codex. Previous attempt
 
 ## Architecture
 
-### High-Level Structure
+### High-Level structure
 
 1. **Shared Core Module** (`lib/skills-core.js`)
    - Common skill discovery and parsing logic
@@ -41,7 +41,7 @@ OpenCode.ai is a coding agent similar to Claude Code and Codex. Previous attempt
    - Core: `~/.config/opencode/superpowers/skills/` (or installed location)
    - Personal: `~/.config/opencode/skills/` (shadows core skills)
 
-### Code Reuse Strategy
+### Code reuse strategy
 
 Extract common functionality from `.codex/superpowers-codex` into shared module:
 
@@ -56,7 +56,7 @@ module.exports = {
 };
 ```
 
-### Skill Frontmatter Format
+### Skill frontmatter format
 
 Current format (no `when_to_use` field):
 
@@ -67,9 +67,9 @@ description: Use when [condition] - [what it does]; [additional context]
 ---
 ```
 
-## OpenCode Plugin Implementation
+## OpenCode plugin implementation
 
-### Custom Tools
+### Custom tools
 
 **Tool 1: `use_skill`**
 
@@ -116,7 +116,7 @@ Lists all available skills with metadata.
 }
 ```
 
-### Session Startup Hook
+### Session startup hook
 
 When a new session starts (`session.started` event):
 
@@ -129,15 +129,18 @@ When a new session starts (`session.started` event):
    - Include skill directories for each
 
 3. **Inject tool mapping instructions**
+
    ```markdown
    **Tool Mapping for OpenCode:**
    When skills reference tools you don't have, substitute:
+
    - `TodoWrite` → `update_plan`
    - `Task` with subagents → Use OpenCode subagent system (@mention)
    - `Skill` tool → `use_skill` custom tool
    - Read, Write, Edit, Bash → Your native equivalents
 
    **Skill directories contain:**
+
    - Supporting scripts (run with bash)
    - Additional documentation (read with read tool)
    - Utilities specific to that skill
@@ -147,7 +150,7 @@ When a new session starts (`session.started` event):
    - Quick git fetch with timeout
    - Notify if updates available
 
-### Plugin Structure
+### Plugin structure
 
 ```javascript
 // .opencode/plugin/superpowers.js
@@ -195,9 +198,9 @@ export const SuperpowersPlugin = async ({ client, directory, $ }) => {
 };
 ```
 
-## File Structure
+## File structure
 
-```
+```text
 superpowers/
 ├── lib/
 │   └── skills-core.js           # NEW: Shared skill logic
@@ -212,9 +215,9 @@ superpowers/
 └── skills/                       # Unchanged
 ```
 
-## Implementation Plan
+## Implementation plan
 
-### Phase 1: Refactor Shared Core
+### Phase 1: refactor shared core
 
 1. Create `lib/skills-core.js`
    - Extract frontmatter parsing from `.codex/superpowers-codex`
@@ -232,7 +235,7 @@ superpowers/
    - Verify use-skill command
    - Verify find-skills command
 
-### Phase 2: Build OpenCode Plugin
+### Phase 2: build OpenCode plugin
 
 1. Create `.opencode/plugin/superpowers.js`
    - Import shared core from `../../lib/skills-core.js`
@@ -251,14 +254,14 @@ superpowers/
    - Verify find_skills tool works
    - Verify skill directories are accessible
 
-### Phase 3: Documentation & Polish
+### Phase 3: documentation & polish
 
 1. Update README with OpenCode support
 2. Add OpenCode installation to main docs
 3. Update RELEASE-NOTES
 4. Test both Codex and OpenCode work correctly
 
-## Next Steps
+## Next steps
 
 1. **Create isolated workspace** (using git worktrees)
    - Branch: `feature/opencode-support`

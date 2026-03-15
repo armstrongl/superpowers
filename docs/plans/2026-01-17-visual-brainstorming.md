@@ -1,4 +1,4 @@
-# Visual Brainstorming Companion Implementation Plan
+# Visual brainstorming companion implementation plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
@@ -10,9 +10,10 @@
 
 ---
 
-## Task 1: Create the Server Foundation
+## Task 1: create the server foundation
 
 **Files:**
+
 - Create: `lib/brainstorm-server/index.js`
 - Create: `lib/brainstorm-server/package.json`
 
@@ -140,9 +141,10 @@ git commit -m "feat: add brainstorm server foundation"
 
 ---
 
-## Task 2: Create the Helper Library
+## Task 2: create the helper library
 
 **Files:**
+
 - Create: `lib/brainstorm-server/helper.js`
 
 **Step 1: Create helper.js with event auto-capture**
@@ -261,9 +263,10 @@ git commit -m "feat: add browser helper library for event capture"
 
 ---
 
-## Task 3: Write Tests for the Server
+## Task 3: write tests for the server
 
 **Files:**
+
 - Create: `tests/brainstorm-server/server.test.js`
 - Create: `tests/brainstorm-server/package.json`
 
@@ -404,9 +407,10 @@ git commit -m "test: add brainstorm server integration tests"
 
 ---
 
-## Task 4: Add Visual Companion to Brainstorming Skill
+## Task 4: add visual companion to brainstorming skill
 
 **Files:**
+
 - Modify: `skills/brainstorming/SKILL.md`
 - Create: `skills/brainstorming/visual-companion.md` (supporting doc)
 
@@ -415,9 +419,9 @@ git commit -m "test: add brainstorm server integration tests"
 Create `skills/brainstorming/visual-companion.md`:
 
 ```markdown
-# Visual Companion Reference
+# Visual companion reference
 
-## Starting the Server
+## Starting the server
 
 Run as a background job:
 
@@ -427,11 +431,11 @@ node ${PLUGIN_ROOT}/lib/brainstorm-server/index.js
 
 Tell the user: "I've started a visual companion at http://localhost:3333 - open it in a browser."
 
-## Pushing Screens
+## Pushing screens
 
 Write HTML to `/tmp/brainstorm/screen.html`. The server watches this file and auto-refreshes the browser.
 
-## Reading User Responses
+## Reading user responses
 
 Check the background task output for JSON events:
 
@@ -441,13 +445,14 @@ Check the background task output for JSON events:
 ```
 
 Event types:
+
 - **click**: User clicked button or `data-choice` element
 - **submit**: User submitted form (includes all form data)
 - **input**: User typed in field (debounced 500ms)
 
-## HTML Patterns
+## HTML patterns
 
-### Choice Cards
+### Choice cards
 
 ```html
 <div class="options">
@@ -462,7 +467,7 @@ Event types:
 </div>
 ```
 
-### Interactive Mockup
+### Interactive mockup
 
 ```html
 <div class="mockup">
@@ -472,7 +477,7 @@ Event types:
 </div>
 ```
 
-### Form with Notes
+### Form with notes
 
 ```html
 <form>
@@ -487,7 +492,9 @@ Event types:
 ```html
 <button onclick="brainstorm.choice('custom', {extra: 'data'})">Custom</button>
 ```
-```
+
+
+```text
 
 **Step 2: Add visual companion section to brainstorming skill**
 
@@ -530,9 +537,10 @@ git commit -m "feat: add visual companion to brainstorming skill"
 
 ---
 
-## Task 5: Add Server to Plugin Ignore (Optional Cleanup)
+## Task 5: add server to plugin ignore (Optional cleanup)
 
 **Files:**
+
 - Check if `.gitignore` needs node_modules exclusion for lib/brainstorm-server
 
 **Step 1: Check current gitignore**
@@ -542,7 +550,8 @@ Run: `cat .gitignore 2>/dev/null || echo "No .gitignore"`
 **Step 2: Add node_modules if needed**
 
 If not already present, add:
-```
+
+```text
 lib/brainstorm-server/node_modules/
 ```
 
@@ -565,6 +574,7 @@ After completing all tasks:
 4. **Brainstorming skill** updated with visual companion section and `visual-companion.md` reference doc
 
 **To use:**
+
 1. Start server as background job: `node lib/brainstorm-server/index.js &`
 2. Tell user to open `http://localhost:3333`
 3. Write HTML to `/tmp/brainstorm/screen.html`

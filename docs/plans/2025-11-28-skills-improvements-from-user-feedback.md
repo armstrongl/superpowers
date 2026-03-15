@@ -1,4 +1,4 @@
-# Skills Improvements from User Feedback
+# Skills improvements from user feedback
 
 **Date:** 2025-11-28
 **Status:** Draft
@@ -6,13 +6,14 @@
 
 ---
 
-## Executive Summary
+## Executive summary
 
 Two Claude instances provided detailed feedback from actual development sessions. Their feedback reveals **systematic gaps** in current skills that allowed preventable bugs to ship despite following the skills.
 
 **Critical insight:** These are problem reports, not just solution proposals. The problems are real; the solutions need careful evaluation.
 
 **Key themes:**
+
 1. **Verification gaps** - We verify operations succeed but not that they achieve intended outcomes
 2. **Process hygiene** - Background processes accumulate and interfere across subagents
 3. **Context optimization** - Subagents get too much irrelevant information
@@ -22,11 +23,12 @@ Two Claude instances provided detailed feedback from actual development sessions
 
 ---
 
-## Problems Identified
+## Problems identified
 
-### Problem 1: Configuration Change Verification Gap
+### Problem 1: configuration change verification gap
 
 **What happened:**
+
 - Subagent tested "OpenAI integration"
 - Set `OPENAI_API_KEY` env var
 - Got status 200 responses
@@ -39,15 +41,17 @@ Two Claude instances provided detailed feedback from actual development sessions
 **Impact:** High - False confidence in integration tests, bugs ship to production
 
 **Example failure pattern:**
+
 - Switch LLM provider → verify status 200 but don't check model name
 - Enable feature flag → verify no errors but don't check feature is active
 - Change environment → verify deployment succeeds but don't check environment vars
 
 ---
 
-### Problem 2: Background Process Accumulation
+### Problem 2: background process accumulation
 
 **What happened:**
+
 - Multiple subagents dispatched during session
 - Each started background server processes
 - Processes accumulated (4+ servers running)
@@ -62,9 +66,10 @@ Subagents are stateless - don't know about previous subagents' processes. No cle
 
 ---
 
-### Problem 3: Context Bloat in Subagent Prompts
+### Problem 3: context bloat in subagent prompts
 
 **What happened:**
+
 - Standard approach: give subagent full plan file to read
 - Experiment: give only task + pattern + file + verify command
 - Result: Faster, more focused, single-attempt completion more common
@@ -75,7 +80,8 @@ Subagents waste tokens and attention on irrelevant plan sections.
 **Impact:** Medium - Slower execution, more failed attempts
 
 **What worked:**
-```
+
+```text
 You are adding a single E2E test to packnplay's test suite.
 
 **Your task:** Add `TestE2E_FeaturePrivilegedMode` to `pkg/runner/e2e_test.go`
@@ -90,9 +96,10 @@ in its metadata should result in the container running with `--privileged` flag.
 
 ---
 
-### Problem 4: No Self-Reflection Before Handoff
+### Problem 4: no Self-Reflection before handoff
 
 **What happened:**
+
 - Added self-reflection prompt: "Look at your work with fresh eyes - what could be better?"
 - Implementer for Task 5 identified failing test was due to implementation bug, not test bug
 - Traced to line 99: `strings.Join(metadata.Entrypoint, " ")` creating invalid Docker syntax
@@ -105,9 +112,10 @@ Implementers don't naturally step back and critique their own work before report
 
 ---
 
-### Problem 5: Mock-Interface Drift
+### Problem 5: Mock-Interface drift
 
 **What happened:**
+
 ```typescript
 // Interface defines close()
 interface PlatformAdapter {
@@ -124,6 +132,7 @@ vi.mock('web-adapter', () => ({
   })),
 }));
 ```
+
 - Tests passed
 - Runtime crashed: "adapter.cleanup is not a function"
 
@@ -137,9 +146,10 @@ The skill covers testing mock behavior and mocking without understanding, but no
 
 ---
 
-### Problem 6: Code Reviewer File Access
+### Problem 6: code reviewer file access
 
 **What happened:**
+
 - Code reviewer subagent dispatched
 - Couldn't find test file: "The file doesn't appear to exist in the repository"
 - File actually exists
@@ -152,9 +162,10 @@ Reviewer prompts don't include explicit file reading instructions.
 
 ---
 
-### Problem 7: Fix Workflow Latency
+### Problem 7: fix workflow latency
 
 **What happened:**
+
 - Implementer identifies bug during self-reflection
 - Implementer knows the fix
 - Current workflow: report → I dispatch fixer → fixer fixes → I verify
@@ -167,9 +178,10 @@ Rigid separation between implementer and fixer roles when implementer has alread
 
 ---
 
-### Problem 8: Skills Not Being Read
+### Problem 8: skills not being read
 
 **What happened:**
+
 - `testing-anti-patterns` skill exists
 - Neither human nor subagents read it before writing tests
 - Would have prevented some issues (though not all - see Problem 5)
@@ -181,35 +193,36 @@ No enforcement that subagents read relevant skills. No prompt includes skill rea
 
 ---
 
-## Proposed Improvements
+## Proposed improvements
 
-### 1. verification-before-completion: Add Configuration Change Verification
+### 1. verification-before-completion: add configuration change verification
 
 **Add new section:**
 
 ```markdown
-## Verifying Configuration Changes
+## Verifying configuration changes
 
 When testing changes to configuration, providers, feature flags, or environment:
 
 **Don't just verify the operation succeeded. Verify the output reflects the intended change.**
 
-### Common Failure Pattern
+### Common failure pattern
 
 Operation succeeds because *some* valid config exists, but it's not the config you intended to test.
 
 ### Examples
 
 | Change | Insufficient | Required |
-|--------|-------------|----------|
+| -------- | ------------- | ---------- |
 | Switch LLM provider | Status 200 | Response contains expected model name |
 | Enable feature flag | No errors | Feature behavior actually active |
 | Change environment | Deploy succeeds | Logs/vars reference new environment |
 | Set credentials | Auth succeeds | Authenticated user/context is correct |
 
-### Gate Function
+### Gate function
 
 ```
+
 BEFORE claiming configuration change works:
 
 1. IDENTIFY: What should be DIFFERENT after this change?
@@ -222,10 +235,12 @@ BEFORE claiming configuration change works:
 5. ONLY THEN: Claim configuration change works
 
 Red flags:
-  - "Request succeeded" without checking content
-  - Checking status code but not response body
-  - Verifying no errors but not positive confirmation
-```
+
+- "Request succeeded" without checking content
+- Checking status code but not response body
+- Verifying no errors but not positive confirmation
+
+```text
 
 **Why this works:**
 Forces verification of INTENT, not just operation success.
@@ -250,30 +265,38 @@ Subagents are stateless - they don't know about processes started by previous su
 **Before dispatching E2E test subagent, include cleanup in prompt:**
 
 ```
+
 BEFORE starting any services:
+
 1. Kill existing processes: pkill -f "<service-pattern>" 2>/dev/null || true
 2. Wait for cleanup: sleep 1
 3. Verify port free: lsof -i :<port> && echo "ERROR: Port still in use" || echo "Port free"
 
 AFTER tests complete:
+
 1. Kill the process you started
 2. Verify cleanup: pgrep -f "<service-pattern>" || echo "Cleanup successful"
-```
+
+```text
 
 ### Example
 
 ```
+
 Task: Run E2E test of API server
 
 Prompt includes:
 "Before starting the server:
+
 - Kill any existing servers: pkill -f 'node.*server.js' 2>/dev/null || true
 - Verify port 3001 is free: lsof -i :3001 && exit 1 || echo 'Port available'
 
 After tests:
+
 - Kill the server you started
 - Verify: pgrep -f 'node.*server.js' || echo 'Cleanup verified'"
-```
+
+```text
 
 ### Why This Matters
 
@@ -284,34 +307,40 @@ After tests:
 ```
 
 **Trade-off analysis:**
+
 - Adds boilerplate to prompts
 - But prevents very confusing debugging
 - Worth it for E2E test subagents
 
 ---
 
-### 3. subagent-driven-development: Add Lean Context Option
+### 3. subagent-driven-development: add lean context option
 
 **Modify Step 2: Execute Task with Subagent**
 
 **Before:**
-```
+
+```text
 Read that task carefully from [plan-file].
 ```
 
 **After:**
-```
+
+```text
 ## Context Approaches
 
 **Full Plan (default):**
 Use when tasks are complex or have dependencies:
 ```
+
 Read Task N from [plan-file] carefully.
-```
+
+```text
 
 **Lean Context (for independent tasks):**
 Use when task is standalone and pattern-based:
 ```
+
 You are implementing: [1-2 sentence task description]
 
 File to modify: [exact path]
@@ -320,7 +349,8 @@ What to implement: [specific requirement]
 Verification: [exact command to run]
 
 [Do NOT include full plan file]
-```
+
+```text
 
 **Use lean context when:**
 - Task follows existing pattern (add similar test, implement similar feature)
@@ -334,7 +364,8 @@ Verification: [exact command to run]
 ```
 
 **Example:**
-```
+
+```text
 Lean context prompt:
 
 "You are adding a test for privileged mode in devcontainer features.
@@ -352,13 +383,13 @@ Reduces token usage, increases focus, faster completion when appropriate.
 
 ---
 
-### 4. subagent-driven-development: Add Self-Reflection Step
+### 4. subagent-driven-development: add Self-Reflection step
 
 **Modify Step 2: Execute Task with Subagent**
 
 **Add to prompt template:**
 
-```
+```text
 When done, BEFORE reporting back:
 
 Take a step back and review your work with fresh eyes.
@@ -387,14 +418,14 @@ Adds ~30 seconds per task, but catches issues before review.
 
 ---
 
-### 5. requesting-code-review: Add Explicit File Reading
+### 5. requesting-code-review: add explicit file reading
 
 **Modify the code-reviewer template:**
 
 **Add at the beginning:**
 
 ```markdown
-## Files to Review
+## Files to review
 
 BEFORE analyzing, read these files:
 
@@ -404,6 +435,7 @@ BEFORE analyzing, read these files:
 Use Read tool to load each file.
 
 If you cannot find a file:
+
 - Check exact path from diff
 - Try alternate locations
 - Report: "Cannot locate [path] - please verify file exists"
@@ -416,14 +448,15 @@ Explicit instruction prevents "file not found" issues.
 
 ---
 
-### 6. testing-anti-patterns: Add Mock-Interface Drift Anti-Pattern
+### 6. testing-anti-patterns: add Mock-Interface drift Anti-Pattern
 
 **Add new Anti-Pattern 6:**
 
 ```markdown
-## Anti-Pattern 6: Mocks Derived from Implementation
+## Anti-Pattern 6: mocks derived from implementation
 
 **The violation:**
+
 ```typescript
 // Code (BUGGY) calls cleanup()
 await adapter.cleanup();
@@ -440,12 +473,14 @@ interface PlatformAdapter {
 ```
 
 **Why this is wrong:**
+
 - Mock encodes the bug into the test
 - TypeScript can't catch inline mocks with wrong method names
 - Test passes because both code and mock are wrong
 - Runtime crashes when real object is used
 
 **The fix:**
+
 ```typescript
 // ✅ GOOD: Derive mock from interface
 
@@ -462,9 +497,9 @@ const mock = {
 // That failure reveals the bug BEFORE runtime
 ```
 
-### Gate Function
+### Gate function
 
-```
+```text
 BEFORE writing any mock:
 
   1. STOP - Do NOT look at the code under test yet
@@ -489,10 +524,12 @@ BEFORE writing any mock:
 **Detection:**
 
 When you see runtime error "X is not a function" and tests pass:
+
 1. Check if X is mocked
 2. Compare mock methods to interface methods
 3. Look for method name mismatches
-```
+
+```text
 
 **Why this works:**
 Directly addresses the failure pattern from feedback.
@@ -525,17 +562,19 @@ Adds time to each task, but prevents entire classes of bugs.
 
 ---
 
-### 8. subagent-driven-development: Allow Implementer to Fix Self-Identified Issues
+### 8. subagent-driven-development: allow implementer to fix Self-Identified issues
 
 **Modify Step 2:**
 
 **Current:**
-```
+
+```text
 Subagent reports back with summary of work.
 ```
 
 **Proposed:**
-```
+
+```text
 Subagent performs self-reflection, then:
 
 IF self-reflection identifies fixable issues:
@@ -560,9 +599,9 @@ Slightly more complex prompt, but faster end-to-end.
 
 ---
 
-## Implementation Plan
+## Implementation plan
 
-### Phase 1: High-Impact, Low-Risk (Do First)
+### Phase 1: High-Impact, Low-Risk (Do first)
 
 1. **verification-before-completion: Configuration change verification**
    - Clear addition, doesn't change existing content
@@ -579,7 +618,7 @@ Slightly more complex prompt, but faster end-to-end.
    - Fixes concrete problem (reviewers can't find files)
    - File: `skills/requesting-code-review/SKILL.md`
 
-### Phase 2: Moderate Changes (Test Carefully)
+### Phase 2: moderate changes (Test carefully)
 
 4. **subagent-driven-development: Process hygiene**
    - Adds new section, doesn't change workflow
@@ -596,7 +635,7 @@ Slightly more complex prompt, but faster end-to-end.
    - But ensures skills are actually used
    - File: `skills/subagent-driven-development/SKILL.md`
 
-### Phase 3: Optimization (Validate First)
+### Phase 3: optimization (Validate first)
 
 7. **subagent-driven-development: Lean context option**
    - Adds complexity (two approaches)
@@ -610,7 +649,7 @@ Slightly more complex prompt, but faster end-to-end.
 
 ---
 
-## Open Questions
+## Open questions
 
 1. **Lean context approach:**
    - Should we make it the default for pattern-based tasks?
@@ -634,7 +673,7 @@ Slightly more complex prompt, but faster end-to-end.
 
 ---
 
-## Success Metrics
+## Success metrics
 
 How do we know these improvements work?
 
@@ -660,32 +699,40 @@ How do we know these improvements work?
 
 ---
 
-## Risks and Mitigations
+## Risks and mitigations
 
-### Risk: Prompt Bloat
+### Risk: prompt bloat
+
 **Problem:** Adding all these requirements makes prompts overwhelming
 **Mitigation:**
+
 - Phase implementation (don't add everything at once)
 - Make some additions conditional (E2E hygiene only for E2E tests)
 - Consider templates for different task types
 
-### Risk: Analysis Paralysis
+### Risk: analysis paralysis
+
 **Problem:** Too much reflection/verification slows execution
 **Mitigation:**
+
 - Keep gate functions quick (seconds, not minutes)
 - Make lean context opt-in initially
 - Monitor task completion times
 
-### Risk: False Sense of Security
+### Risk: false sense of security
+
 **Problem:** Following checklist doesn't guarantee correctness
 **Mitigation:**
+
 - Emphasize gate functions are minimums, not maximums
 - Keep "use judgment" language in skills
 - Document that skills catch common failures, not all failures
 
-### Risk: Skill Divergence
+### Risk: skill divergence
+
 **Problem:** Different skills give conflicting advice
 **Mitigation:**
+
 - Review changes across all skills for consistency
 - Document how skills interact (Integration sections)
 - Test with real scenarios before deployment
@@ -695,16 +742,19 @@ How do we know these improvements work?
 ## Recommendation
 
 **Proceed with Phase 1 immediately:**
+
 - verification-before-completion: Configuration change verification
 - testing-anti-patterns: Mock-interface drift
 - requesting-code-review: Explicit file reading
 
 **Test Phase 2 with Jesse before finalizing:**
+
 - Get feedback on self-reflection impact
 - Validate process hygiene approach
 - Confirm skills reading requirement is worth overhead
 
 **Hold Phase 3 pending validation:**
+
 - Lean context needs real-world testing
 - Implementer-fix workflow change needs careful evaluation
 

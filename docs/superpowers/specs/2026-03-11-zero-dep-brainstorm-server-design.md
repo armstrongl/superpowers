@@ -1,4 +1,4 @@
-# Zero-Dependency Brainstorm Server
+# Zero-Dependency brainstorm server
 
 Replace the brainstorm companion server's vendored node_modules (express, ws, chokidar — 714 tracked files) with a single zero-dependency `server.js` using only Node.js built-ins.
 
@@ -13,13 +13,14 @@ A single `server.js` file (~250-300 lines) using `http`, `crypto`, `fs`, and `pa
 - **When run directly** (`node server.js`): starts the HTTP/WebSocket server
 - **When required** (`require('./server.js')`): exports WebSocket protocol functions for unit testing
 
-### WebSocket Protocol
+### WebSocket protocol
 
 Implements RFC 6455 for text frames only:
 
 **Handshake:** Compute `Sec-WebSocket-Accept` from client's `Sec-WebSocket-Key` using SHA-1 + the RFC 6455 magic GUID. Return 101 Switching Protocols.
 
 **Frame decoding (client to server):** Handle three masked length encodings:
+
 - Small: payload < 126 bytes
 - Medium: 126-65535 bytes (16-bit extended)
 - Large: > 65535 bytes (64-bit extended)
@@ -34,7 +35,7 @@ XOR-unmask payload using 4-byte mask key. Return `{ opcode, payload, bytesConsum
 
 **Buffer accumulation:** Each connection maintains a buffer. On `data`, append and loop `decodeFrame` until it returns null or buffer is empty.
 
-### HTTP Server
+### HTTP server
 
 Three routes:
 
@@ -53,7 +54,7 @@ Environment variables (all optional):
 - `BRAINSTORM_URL_HOST` — hostname for the URL in startup JSON (default: `localhost` when host is `127.0.0.1`, otherwise same as host)
 - `BRAINSTORM_DIR` — screen directory path (default: `/tmp/brainstorm`)
 
-### Startup Sequence
+### Startup sequence
 
 1. Create `SCREEN_DIR` if it doesn't exist (`mkdirSync` recursive)
 2. Load frame template and helper.js from `__dirname`
@@ -62,7 +63,7 @@ Environment variables (all optional):
 5. On successful listen, log `server-started` JSON to stdout: `{ type, port, host, url_host, url, screen_dir }`
 6. Write the same JSON to `SCREEN_DIR/.server-info` so agents can find connection details when stdout is hidden (background execution)
 
-### Application-Level WebSocket Messages
+### Application-Level WebSocket messages
 
 When a TEXT frame arrives from a client:
 
@@ -70,7 +71,7 @@ When a TEXT frame arrives from a client:
 2. Log to stdout as `{ source: 'user-event', ...event }`.
 3. If the event contains a `choice` property, append the JSON to `SCREEN_DIR/.events` (one line per event).
 
-### File Watching
+### File watching
 
 `fs.watch(SCREEN_DIR)` replaces chokidar. On HTML file events:
 
@@ -80,7 +81,7 @@ When a TEXT frame arrives from a client:
 
 Debounce per-filename with ~100ms timeout to prevent duplicate events (common on macOS and Linux).
 
-### Error Handling
+### Error handling
 
 - Malformed JSON from WebSocket clients: log to stderr, continue
 - Unhandled opcodes: close with status 1003
@@ -88,15 +89,15 @@ Debounce per-filename with ~100ms timeout to prevent duplicate events (common on
 - `fs.watch` errors: log to stderr, continue
 - No graceful shutdown logic — shell scripts handle process lifecycle via SIGTERM
 
-## What Changes
+## What changes
 
 | Before | After |
-|---|---|
+| --- | --- |
 | `index.js` + `package.json` + `package-lock.json` + 714 `node_modules` files | `server.js` (single file) |
 | express, ws, chokidar dependencies | none |
 | No static file serving | `/files/*` serves from screen directory |
 
-## What Stays the Same
+## What stays the same
 
 - `helper.js` — no changes
 - `frame-template.html` — no changes
@@ -105,7 +106,7 @@ Debounce per-filename with ~100ms timeout to prevent duplicate events (common on
 - `visual-companion.md` — no changes
 - All existing server behavior and external contract
 
-## Platform Compatibility
+## Platform compatibility
 
 - `server.js` uses only cross-platform Node built-ins
 - `fs.watch` is reliable for single flat directories on macOS, Linux, and Windows

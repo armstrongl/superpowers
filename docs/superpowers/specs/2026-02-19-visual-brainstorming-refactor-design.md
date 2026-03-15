@@ -1,4 +1,4 @@
-# Visual Brainstorming Refactor: Browser Displays, Terminal Commands
+# Visual brainstorming refactor: browser displays, terminal commands
 
 **Date:** 2026-02-19
 **Status:** Approved
@@ -12,13 +12,13 @@ Claude Code's execution model is turn-based. There is no way for Claude to liste
 
 ## Design
 
-### Core Model
+### Core model
 
 **Browser = interactive display.** Shows mockups, lets the user click to select options. Selections are recorded server-side.
 
 **Terminal = conversation channel.** Always unblocked, always available. The user talks to Claude here.
 
-### The Loop
+### The loop
 
 1. Claude writes an HTML file to the session directory
 2. Server detects it via chokidar, pushes WebSocket reload to the browser (unchanged)
@@ -29,11 +29,11 @@ Claude Code's execution model is turn-based. There is no way for Claude to liste
 
 No background tasks. No `TaskOutput` blocking. No polling scripts.
 
-### Key Deletion: `wait-for-feedback.sh`
+### Key deletion: `wait-for-feedback.sh`
 
 Deleted entirely. Its purpose was to bridge "server logs events to stdout" and "Claude needs to receive those events." The `.events` file replaces this — the server writes user interaction events directly, and Claude reads them with whatever file-reading mechanism the platform provides.
 
-### Key Addition: `.events` File (Per-Screen Event Stream)
+### Key addition: `.events` file (Per-Screen event stream)
 
 The server writes all user interaction events to `$SCREEN_DIR/.events`, one JSON object per line. This gives Claude the full interaction stream for the current screen — not just the final selection, but the user's exploration path (clicked A, then B, settled on C).
 
@@ -51,7 +51,7 @@ Example contents after a user explores options:
 - The file contains only user events (`click`, etc.) — not server lifecycle events (`server-started`, `screen-added`). This keeps it small and focused.
 - Claude can read the full stream to understand the user's exploration pattern, or just look at the last `choice` event for the final selection.
 
-## Changes by File
+## Changes by file
 
 ### `index.js` (server)
 
@@ -70,10 +70,12 @@ The current regex anchors on `<div class="feedback-footer">`, which is being rem
 ### `frame-template.html` (UI frame)
 
 **Remove:**
+
 - The `feedback-footer` div (textarea, Send button, label, `.feedback-row`)
 - Associated CSS (`.feedback-footer`, `.feedback-footer label`, `.feedback-row`, textarea and button styles within it)
 
 **Add:**
+
 - `<!-- CONTENT -->` placeholder inside `#claude-content`, replacing the default text
 - A selection indicator bar where the footer was, with two states:
   - Default: "Click an option above, then return to the terminal"
@@ -81,6 +83,7 @@ The current regex anchors on `<div class="feedback-footer">`, which is being rem
 - CSS for the indicator bar (subtle, similar visual weight to the existing header)
 
 **Keep unchanged:**
+
 - Header bar with "Brainstorm Companion" title and connection status
 - `.main` wrapper and `#claude-content` container
 - All component CSS (`.options`, `.cards`, `.mockup`, `.split`, `.pros-cons`, placeholders, mock elements)
@@ -89,6 +92,7 @@ The current regex anchors on `<div class="feedback-footer">`, which is being rem
 ### `helper.js` (client-side script)
 
 **Remove:**
+
 - `sendToClaude()` function and the "Sent to Claude" page takeover
 - `window.send()` function (was tied to the removed Send button)
 - Form submission handler — no purpose without the feedback textarea, adds log noise
@@ -96,6 +100,7 @@ The current regex anchors on `<div class="feedback-footer">`, which is being rem
 - `pageshow` event listener (was added to fix textarea persistence — no textarea anymore)
 
 **Keep:**
+
 - WebSocket connection, reconnect logic, event queue
 - Reload handler (`window.location.reload()` on server push)
 - `window.toggleSelect()` for selection highlighting
@@ -103,28 +108,34 @@ The current regex anchors on `<div class="feedback-footer">`, which is being rem
 - `window.brainstorm.send()` and `window.brainstorm.choice()` — these are distinct from the removed `window.send()`. They call `sendEvent` which logs to the server via WebSocket. Useful for custom full-document pages.
 
 **Narrow:**
+
 - Click handler: capture only `[data-choice]` clicks, not all buttons/links. The broad capture was needed when the browser was a feedback channel; now it's just for selection tracking.
 
 **Add:**
+
 - On `data-choice` click, update the selection indicator bar text to show which option was selected.
 
 **Remove from `window.brainstorm` API:**
+
 - `brainstorm.sendToClaude` — no longer exists
 
 ### `visual-companion.md` (skill instructions)
 
 **Rewrite "The Loop" section** to the non-blocking flow described above. Remove all references to:
+
 - `wait-for-feedback.sh`
 - `TaskOutput` blocking
 - Timeout/retry logic (600s timeout, 30-minute cap)
 - "User Feedback Format" section describing `send-to-claude` JSON
 
 **Replace with:**
+
 - The new loop (write HTML → end turn → user responds in terminal → read `.events` → iterate)
 - `.events` file format documentation
 - Guidance that the terminal message is the primary feedback; `.events` provides the full browser interaction stream for additional context
 
 **Keep:**
+
 - Server startup/shutdown instructions
 - Content fragment vs full document guidance
 - CSS class reference and available components
@@ -137,17 +148,18 @@ The current regex anchors on `<div class="feedback-footer">`, which is being rem
 ### `tests/brainstorm-server/server.test.js`
 
 Tests that need updating:
+
 - Test asserting `feedback-footer` presence in fragment responses — update to assert the selection indicator bar or `<!-- CONTENT -->` replacement
 - Test asserting `helper.js` contains `send` — update to reflect narrowed API
 - Test asserting `sendToClaude` CSS variable usage — remove (function no longer exists)
 
-## Platform Compatibility
+## Platform compatibility
 
 The server code (`index.js`, `helper.js`, `frame-template.html`) is fully platform-agnostic — pure Node.js and browser JavaScript. No Claude Code-specific references. Already proven to work on Codex via background terminal interaction.
 
 The skill instructions (`visual-companion.md`) are the platform-adaptive layer. Each platform's Claude uses its own tools to start the server, read `.events`, etc. The non-blocking model works naturally across platforms since it doesn't depend on any platform-specific blocking primitive.
 
-## What This Enables
+## What this enables
 
 - **TUI always responsive** during visual brainstorming
 - **Mixed input** — click in browser + type in terminal, naturally merged
@@ -155,7 +167,7 @@ The skill instructions (`visual-companion.md`) are the platform-adaptive layer. 
 - **Simpler architecture** — no background tasks, no polling scripts, no timeout management
 - **Cross-platform** — same server code works on Claude Code, Codex, and any future platform
 
-## What This Drops
+## What this drops
 
 - **Pure-browser feedback workflow** — user must return to the terminal to continue. The selection indicator bar guides them, but it's one extra step compared to the old click-Send-and-wait flow.
 - **Inline text feedback from browser** — the textarea is gone. All text feedback goes through the terminal. This is intentional — the terminal is a better text input channel than a small textarea in a frame.

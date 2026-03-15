@@ -1,4 +1,4 @@
-# Claude Code Skills Tests
+# Claude code skills tests
 
 Automated tests for superpowers skills using Claude Code CLI.
 
@@ -11,37 +11,44 @@ This test suite verifies that skills are loaded correctly and Claude follows the
 - Claude Code CLI installed and in PATH (`claude --version` should work)
 - Local superpowers plugin installed (see main README for installation)
 
-## Running Tests
+## Running tests
 
 ### Run all fast tests (recommended):
+
 ```bash
 ./run-skill-tests.sh
 ```
 
 ### Run integration tests (slow, 10-30 minutes):
+
 ```bash
 ./run-skill-tests.sh --integration
 ```
 
 ### Run specific test:
+
 ```bash
 ./run-skill-tests.sh --test test-subagent-driven-development.sh
 ```
 
 ### Run with verbose output:
+
 ```bash
 ./run-skill-tests.sh --verbose
 ```
 
 ### Set custom timeout:
+
 ```bash
 ./run-skill-tests.sh --timeout 1800  # 30 minutes for integration tests
 ```
 
-## Test Structure
+## Test structure
 
-### test-helpers.sh
+### Test-helpers.sh
+
 Common functions for skills testing:
+
 - `run_claude "prompt" [timeout]` - Run Claude with prompt
 - `assert_contains output pattern name` - Verify pattern exists
 - `assert_not_contains output pattern name` - Verify pattern absent
@@ -50,15 +57,16 @@ Common functions for skills testing:
 - `create_test_project` - Create temp test directory
 - `create_test_plan project_dir` - Create sample plan file
 
-### Test Files
+### Test files
 
 Each test file:
+
 1. Sources `test-helpers.sh`
 2. Runs Claude Code with specific prompts
 3. Verifies expected behavior using assertions
 4. Returns 0 on success, non-zero on failure
 
-## Example Test
+## Example test
 
 ```bash
 #!/usr/bin/env bash
@@ -78,12 +86,14 @@ assert_contains "$output" "expected behavior" "Skill describes behavior"
 echo "=== All tests passed ==="
 ```
 
-## Current Tests
+## Current tests
 
-### Fast Tests (run by default)
+### Fast tests (run by default)
 
-#### test-subagent-driven-development.sh
+#### Test-subagent-driven-development.sh
+
 Tests skill content and requirements (~2 minutes):
+
 - Skill loading and accessibility
 - Workflow ordering (spec compliance before code quality)
 - Self-review requirements documented
@@ -92,10 +102,12 @@ Tests skill content and requirements (~2 minutes):
 - Review loops documented
 - Task context provision documented
 
-### Integration Tests (use --integration flag)
+### Integration tests (use --integration flag)
 
-#### test-subagent-driven-development-integration.sh
+#### Test-subagent-driven-development-integration.sh
+
 Full workflow execution test (~10-30 minutes):
+
 - Creates real test project with Node.js setup
 - Creates implementation plan with 2 tasks
 - Executes plan using subagent-driven-development
@@ -110,12 +122,13 @@ Full workflow execution test (~10-30 minutes):
   - Proper git commits created
 
 **What it tests:**
+
 - The workflow actually works end-to-end
 - Our improvements are actually applied
 - Subagents follow the skill correctly
 - Final code is functional and tested
 
-## Adding New Tests
+## Adding new tests
 
 1. Create new test file: `test-<skill-name>.sh`
 2. Source test-helpers.sh
@@ -123,25 +136,27 @@ Full workflow execution test (~10-30 minutes):
 4. Add to test list in `run-skill-tests.sh`
 5. Make executable: `chmod +x test-<skill-name>.sh`
 
-## Timeout Considerations
+## Timeout considerations
 
 - Default timeout: 5 minutes per test
 - Claude Code may take time to respond
 - Adjust with `--timeout` if needed
 - Tests should be focused to avoid long runs
 
-## Debugging Failed Tests
+## Debugging failed tests
 
 With `--verbose`, you'll see full Claude output:
+
 ```bash
 ./run-skill-tests.sh --verbose --test test-subagent-driven-development.sh
 ```
 
 Without verbose, only failures show output.
 
-## CI/CD Integration
+## CI/CD integration
 
 To run in CI:
+
 ```bash
 # Run with explicit timeout for CI environments
 ./run-skill-tests.sh --timeout 900

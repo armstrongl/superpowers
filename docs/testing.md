@@ -1,4 +1,4 @@
-# Testing Superpowers Skills
+# Testing superpowers skills
 
 This document describes how to test Superpowers skills, particularly the integration tests for complex skills like `subagent-driven-development`.
 
@@ -6,9 +6,9 @@ This document describes how to test Superpowers skills, particularly the integra
 
 Testing skills that involve subagents, workflows, and complex interactions requires running actual Claude Code sessions in headless mode and verifying their behavior through session transcripts.
 
-## Test Structure
+## Test structure
 
-```
+```text
 tests/
 ├── claude-code/
 │   ├── test-helpers.sh                    # Shared test utilities
@@ -17,9 +17,9 @@ tests/
 │   └── run-skill-tests.sh                 # Test runner (if exists)
 ```
 
-## Running Tests
+## Running tests
 
-### Integration Tests
+### Integration tests
 
 Integration tests execute real Claude Code sessions with actual skills:
 
@@ -37,9 +37,9 @@ cd tests/claude-code
 - Claude Code must be installed and available as `claude` command
 - Local dev marketplace must be enabled: `"superpowers@superpowers-dev": true` in `~/.claude/settings.json`
 
-## Integration Test: subagent-driven-development
+## Integration test: subagent-driven-development
 
-### What It Tests
+### What it tests
 
 The integration test verifies the `subagent-driven-development` skill correctly:
 
@@ -50,7 +50,7 @@ The integration test verifies the `subagent-driven-development` skill correctly:
 5. **Review Loops**: Uses review loops when issues are found
 6. **Independent Verification**: Spec reviewer reads code independently, doesn't trust implementer reports
 
-### How It Works
+### How it works
 
 1. **Setup**: Creates a temporary Node.js project with a minimal implementation plan
 2. **Execution**: Runs Claude Code in headless mode with the skill
@@ -63,9 +63,9 @@ The integration test verifies the `subagent-driven-development` skill correctly:
    - Git commits show proper workflow
 4. **Token Analysis**: Shows token usage breakdown by subagent
 
-### Test Output
+### Test output
 
-```
+```text
 ========================================
  Integration Test: subagent-driven-development
 ========================================
@@ -134,7 +134,7 @@ TOTALS:
 STATUS: PASSED
 ```
 
-## Token Analysis Tool
+## Token analysis tool
 
 ### Usage
 
@@ -144,7 +144,7 @@ Analyze token usage from any Claude Code session:
 python3 tests/claude-code/analyze-token-usage.py ~/.claude/projects/<project-dir>/<session-id>.jsonl
 ```
 
-### Finding Session Files
+### Finding session files
 
 Session transcripts are stored in `~/.claude/projects/` with the working directory path encoded:
 
@@ -156,7 +156,7 @@ SESSION_DIR="$HOME/.claude/projects/-Users-jesse-Documents-GitHub-superpowers-su
 ls -lt "$SESSION_DIR"/*.jsonl | head -5
 ```
 
-### What It Shows
+### What it shows
 
 - **Main session usage**: Token usage by the coordinator (you or main Claude instance)
 - **Per-subagent breakdown**: Each Task invocation with:
@@ -168,7 +168,7 @@ ls -lt "$SESSION_DIR"/*.jsonl | head -5
   - Estimated cost
 - **Totals**: Overall token usage and cost estimate
 
-### Understanding the Output
+### Understanding the output
 
 - **High cache reads**: Good - means prompt caching is working
 - **High input tokens on main**: Expected - coordinator has full context
@@ -177,43 +177,47 @@ ls -lt "$SESSION_DIR"/*.jsonl | head -5
 
 ## Troubleshooting
 
-### Skills Not Loading
+### Skills not loading
 
 **Problem**: Skill not found when running headless tests
 
 **Solutions**:
+
 1. Ensure you're running FROM the superpowers directory: `cd /path/to/superpowers && tests/...`
 2. Check `~/.claude/settings.json` has `"superpowers@superpowers-dev": true` in `enabledPlugins`
 3. Verify skill exists in `skills/` directory
 
-### Permission Errors
+### Permission errors
 
 **Problem**: Claude blocked from writing files or accessing directories
 
 **Solutions**:
+
 1. Use `--permission-mode bypassPermissions` flag
 2. Use `--add-dir /path/to/temp/dir` to grant access to test directories
 3. Check file permissions on test directories
 
-### Test Timeouts
+### Test timeouts
 
 **Problem**: Test takes too long and times out
 
 **Solutions**:
+
 1. Increase timeout: `timeout 1800 claude ...` (30 minutes)
 2. Check for infinite loops in skill logic
 3. Review subagent task complexity
 
-### Session File Not Found
+### Session file not found
 
 **Problem**: Can't find session transcript after test run
 
 **Solutions**:
+
 1. Check the correct project directory in `~/.claude/projects/`
 2. Use `find ~/.claude/projects -name "*.jsonl" -mmin -60` to find recent sessions
 3. Verify test actually ran (check for errors in test output)
 
-## Writing New Integration Tests
+## Writing new integration tests
 
 ### Template
 
@@ -253,7 +257,7 @@ fi
 python3 "$SCRIPT_DIR/analyze-token-usage.py" "$SESSION_FILE"
 ```
 
-### Best Practices
+### Best practices
 
 1. **Always cleanup**: Use trap to cleanup temp directories
 2. **Parse transcripts**: Don't grep user-facing output - parse the `.jsonl` session file
@@ -262,11 +266,11 @@ python3 "$SCRIPT_DIR/analyze-token-usage.py" "$SESSION_FILE"
 5. **Show token usage**: Always include token analysis for cost visibility
 6. **Test real behavior**: Verify actual files created, tests passing, commits made
 
-## Session Transcript Format
+## Session transcript format
 
 Session transcripts are JSONL (JSON Lines) files where each line is a JSON object representing a message or tool result.
 
-### Key Fields
+### Key fields
 
 ```json
 {
@@ -282,7 +286,7 @@ Session transcripts are JSONL (JSON Lines) files where each line is a JSON objec
 }
 ```
 
-### Tool Results
+### Tool results
 
 ```json
 {
