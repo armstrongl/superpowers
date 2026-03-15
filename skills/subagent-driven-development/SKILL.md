@@ -1,9 +1,11 @@
 ---
+description: Execute implementation plans by dispatching fresh subagents per task with two-stage review in the current session
 name: subagent-driven-development
-description: Use when executing implementation plans with independent tasks in the current session
+tags: [implementation, subagents, orchestration, review, planning]
+version: "1.1"
 ---
 
-# Subagent-Driven Development
+# Subagent-Driven development
 
 Execute plan by dispatching fresh subagent per task, with two-stage review after each: spec compliance review first, then code quality review.
 
@@ -11,7 +13,7 @@ Execute plan by dispatching fresh subagent per task, with two-stage review after
 
 **Core principle:** Fresh subagent per task + two-stage review (spec then quality) = high quality, fast iteration
 
-## When to Use
+## When to use
 
 ```dot
 digraph when_to_use {
@@ -32,12 +34,13 @@ digraph when_to_use {
 ```
 
 **vs. Executing Plans (parallel session):**
+
 - Same session (no context switch)
 - Fresh subagent per task (no context pollution)
 - Two-stage review after each task: spec compliance first, then code quality
 - Faster iteration (no human-in-loop between tasks)
 
-## The Process
+## The process
 
 ```dot
 digraph process {
@@ -45,14 +48,14 @@ digraph process {
 
     subgraph cluster_per_task {
         label="Per Task";
-        "Dispatch implementer subagent (./implementer-prompt.md)" [shape=box];
+        "Dispatch implementer subagent (agents/implementer.md)" [shape=box];
         "Implementer subagent asks questions?" [shape=diamond];
         "Answer questions, provide context" [shape=box];
         "Implementer subagent implements, tests, commits, self-reviews" [shape=box];
-        "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" [shape=box];
+        "Dispatch spec reviewer subagent (agents/spec-reviewer.md)" [shape=box];
         "Spec reviewer subagent confirms code matches spec?" [shape=diamond];
         "Implementer subagent fixes spec gaps" [shape=box];
-        "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [shape=box];
+        "Dispatch code quality reviewer subagent (agents/code-quality-reviewer.md)" [shape=box];
         "Code quality reviewer subagent approves?" [shape=diamond];
         "Implementer subagent fixes quality issues" [shape=box];
         "Mark task complete in TodoWrite" [shape=box];
@@ -63,28 +66,28 @@ digraph process {
     "Dispatch final code reviewer subagent for entire implementation" [shape=box];
     "Use supapowers:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
 
-    "Read plan, extract all tasks with full text, note context, create TodoWrite" -> "Dispatch implementer subagent (./implementer-prompt.md)";
-    "Dispatch implementer subagent (./implementer-prompt.md)" -> "Implementer subagent asks questions?";
+    "Read plan, extract all tasks with full text, note context, create TodoWrite" -> "Dispatch implementer subagent (agents/implementer.md)";
+    "Dispatch implementer subagent (agents/implementer.md)" -> "Implementer subagent asks questions?";
     "Implementer subagent asks questions?" -> "Answer questions, provide context" [label="yes"];
-    "Answer questions, provide context" -> "Dispatch implementer subagent (./implementer-prompt.md)";
+    "Answer questions, provide context" -> "Dispatch implementer subagent (agents/implementer.md)";
     "Implementer subagent asks questions?" -> "Implementer subagent implements, tests, commits, self-reviews" [label="no"];
-    "Implementer subagent implements, tests, commits, self-reviews" -> "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)";
-    "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" -> "Spec reviewer subagent confirms code matches spec?";
+    "Implementer subagent implements, tests, commits, self-reviews" -> "Dispatch spec reviewer subagent (agents/spec-reviewer.md)";
+    "Dispatch spec reviewer subagent (agents/spec-reviewer.md)" -> "Spec reviewer subagent confirms code matches spec?";
     "Spec reviewer subagent confirms code matches spec?" -> "Implementer subagent fixes spec gaps" [label="no"];
-    "Implementer subagent fixes spec gaps" -> "Dispatch spec reviewer subagent (./spec-reviewer-prompt.md)" [label="re-review"];
-    "Spec reviewer subagent confirms code matches spec?" -> "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [label="yes"];
-    "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" -> "Code quality reviewer subagent approves?";
+    "Implementer subagent fixes spec gaps" -> "Dispatch spec reviewer subagent (agents/spec-reviewer.md)" [label="re-review"];
+    "Spec reviewer subagent confirms code matches spec?" -> "Dispatch code quality reviewer subagent (agents/code-quality-reviewer.md)" [label="yes"];
+    "Dispatch code quality reviewer subagent (agents/code-quality-reviewer.md)" -> "Code quality reviewer subagent approves?";
     "Code quality reviewer subagent approves?" -> "Implementer subagent fixes quality issues" [label="no"];
-    "Implementer subagent fixes quality issues" -> "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [label="re-review"];
+    "Implementer subagent fixes quality issues" -> "Dispatch code quality reviewer subagent (agents/code-quality-reviewer.md)" [label="re-review"];
     "Code quality reviewer subagent approves?" -> "Mark task complete in TodoWrite" [label="yes"];
     "Mark task complete in TodoWrite" -> "More tasks remain?";
-    "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
+    "More tasks remain?" -> "Dispatch implementer subagent (agents/implementer.md)" [label="yes"];
     "More tasks remain?" -> "Dispatch final code reviewer subagent for entire implementation" [label="no"];
     "Dispatch final code reviewer subagent for entire implementation" -> "Use supapowers:finishing-a-development-branch";
 }
 ```
 
-## Model Selection
+## Model selection
 
 Use the least powerful model that can handle each role to conserve cost and increase speed.
 
@@ -95,11 +98,12 @@ Use the least powerful model that can handle each role to conserve cost and incr
 **Architecture, design, and review tasks**: use the most capable available model.
 
 **Task complexity signals:**
+
 - Touches 1-2 files with a complete spec → cheap model
 - Touches multiple files with integration concerns → standard model
 - Requires design judgment or broad codebase understanding → most capable model
 
-## Handling Implementer Status
+## Handling implementer status
 
 Implementer subagents report one of four statuses. Handle each appropriately:
 
@@ -110,6 +114,7 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 **NEEDS_CONTEXT:** The implementer needs information that wasn't provided. Provide the missing context and re-dispatch.
 
 **BLOCKED:** The implementer cannot complete the task. Assess the blocker:
+
 1. If it's a context problem, provide more context and re-dispatch with the same model
 2. If the task requires more reasoning, re-dispatch with a more capable model
 3. If the task is too large, break it into smaller pieces
@@ -117,15 +122,26 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 
 **Never** ignore an escalation or force the same model to retry without changes. If the implementer said it's stuck, something needs to change.
 
-## Prompt Templates
+## Agents
 
-- `./implementer-prompt.md` - Dispatch implementer subagent
-- `./spec-reviewer-prompt.md` - Dispatch spec compliance reviewer subagent
-- `./code-quality-reviewer-prompt.md` - Dispatch code quality reviewer subagent
+- `agents/implementer.md` - Prompt template for dispatching an implementer subagent
+- `agents/spec-reviewer.md` - Prompt template for dispatching a spec compliance reviewer subagent
+- `agents/code-quality-reviewer.md` - Prompt template for dispatching a code quality reviewer subagent
+- `agents/subagent-driven-development-agent.md` - Primary orchestration agent for the full workflow
 
-## Example Workflow
+## References
 
-```
+- `references/fetch-references.md` - Index of reference sources with URLs and descriptions
+
+Run `python scripts/fetch_resources.py` to pull the latest content from authoritative sources.
+
+## Scripts
+
+- `scripts/fetch_resources.py` - Fetches reference documents from authoritative URLs into `references/`
+
+## Example workflow
+
+```text
 You: I'm using Subagent-Driven Development to execute this plan.
 
 [Read plan file once: docs/supapowers/plans/feature-plan.md]
@@ -202,23 +218,27 @@ Done!
 ## Advantages
 
 **vs. Manual execution:**
+
 - Subagents follow TDD naturally
 - Fresh context per task (no confusion)
 - Parallel-safe (subagents don't interfere)
 - Subagent can ask questions (before AND during work)
 
 **vs. Executing Plans:**
+
 - Same session (no handoff)
 - Continuous progress (no waiting)
 - Review checkpoints automatic
 
 **Efficiency gains:**
+
 - No file reading overhead (controller provides full text)
 - Controller curates exactly what context is needed
 - Subagent gets complete information upfront
 - Questions surfaced before work begins (not after)
 
 **Quality gates:**
+
 - Self-review catches issues before handoff
 - Two-stage review: spec compliance, then code quality
 - Review loops ensure fixes actually work
@@ -226,14 +246,16 @@ Done!
 - Code quality ensures implementation is well-built
 
 **Cost:**
+
 - More subagent invocations (implementer + 2 reviewers per task)
 - Controller does more prep work (extracting all tasks upfront)
 - Review loops add iterations
 - But catches issues early (cheaper than debugging later)
 
-## Red Flags
+## Red flags
 
 **Never:**
+
 - Start implementation on main/master branch without explicit user consent
 - Skip reviews (spec compliance OR code quality)
 - Proceed with unfixed issues
@@ -248,30 +270,36 @@ Done!
 - Move to next task while either review has open issues
 
 **If subagent asks questions:**
+
 - Answer clearly and completely
 - Provide additional context if needed
 - Don't rush them into implementation
 
 **If reviewer finds issues:**
+
 - Implementer (same subagent) fixes them
 - Reviewer reviews again
 - Repeat until approved
 - Don't skip the re-review
 
 **If subagent fails task:**
+
 - Dispatch fix subagent with specific instructions
 - Don't try to fix manually (context pollution)
 
 ## Integration
 
 **Required workflow skills:**
+
 - **supapowers:using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
 - **supapowers:writing-plans** - Creates the plan this skill executes
 - **supapowers:requesting-code-review** - Code review template for reviewer subagents
 - **supapowers:finishing-a-development-branch** - Complete development after all tasks
 
 **Subagents should use:**
+
 - **supapowers:test-driven-development** - Subagents follow TDD for each task
 
 **Alternative workflow:**
+
 - **supapowers:executing-plans** - Use for parallel session instead of same-session execution

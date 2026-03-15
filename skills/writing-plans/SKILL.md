@@ -1,9 +1,9 @@
 ---
+description: Use when you have an approved spec or requirements for a multi-step task and need a detailed implementation plan before touching code
 name: writing-plans
-description: Use when you have a spec or requirements for a multi-step task, before touching code
 ---
 
-# Writing Plans
+# Writing plans
 
 ## Overview
 
@@ -16,13 +16,14 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 **Context:** This should be run in a dedicated worktree (created by brainstorming skill).
 
 **Save plans to:** `docs/supapowers/plans/YYYY-MM-DD-<feature-name>.md`
+
 - (User preferences for plan location override this default)
 
-## Scope Check
+## Scope check
 
 If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
 
-## File Structure
+## File structure
 
 Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.
 
@@ -33,21 +34,22 @@ Before defining tasks, map out which files will be created or modified and what 
 
 This structure informs the task decomposition. Each task should produce self-contained changes that make sense independently.
 
-## Bite-Sized Task Granularity
+## Bite-Sized task granularity
 
 **Each step is one action (2-5 minutes):**
+
 - "Write the failing test" - step
 - "Run it to make sure it fails" - step
 - "Implement the minimal code to make the test pass" - step
 - "Run the tests and make sure they pass" - step
 - "Commit" - step
 
-## Plan Document Header
+## Plan document header
 
 **Every plan MUST start with this header:**
 
 ```markdown
-# [Feature Name] Implementation Plan
+# [Feature name] implementation plan
 
 > **For agentic workers:** REQUIRED: Use supapowers:subagent-driven-development (if subagents available) or supapowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -60,12 +62,13 @@ This structure informs the task decomposition. Each task should produce self-con
 ---
 ```
 
-## Task Structure
+## Task structure
 
 ````markdown
-### Task N: [Component Name]
+### Task n: [Component name]
 
 **Files:**
+
 - Create: `exact/path/to/file.py`
 - Modify: `exact/path/to/existing.py:123-145`
 - Test: `tests/exact/path/to/test.py`
@@ -104,17 +107,18 @@ git commit -m "feat: add specific feature"
 ````
 
 ## Remember
+
 - Exact file paths always
 - Complete code in plan (not "add validation")
 - Exact commands with expected output
 - Reference relevant skills with @ syntax
 - DRY, YAGNI, TDD, frequent commits
 
-## Plan Review Loop
+## Plan review loop
 
 After completing each chunk of the plan:
 
-1. Dispatch plan-document-reviewer subagent (see plan-document-reviewer-prompt.md) with precisely crafted review context — never your session history. This keeps the reviewer focused on the plan, not your thought process.
+1. Dispatch plan-document-reviewer subagent (see agents/plan-document-reviewer.md) with precisely crafted review context — never your session history. This keeps the reviewer focused on the plan, not your thought process.
    - Provide: chunk content, path to spec document
 2. If ❌ Issues Found:
    - Fix the issues in the chunk
@@ -125,11 +129,12 @@ After completing each chunk of the plan:
 **Chunk boundaries:** Use `## Chunk N: <name>` headings to delimit chunks. Each chunk should be ≤1000 lines and logically self-contained.
 
 **Review loop guidance:**
+
 - Same agent that wrote the plan fixes it (preserves context)
 - If loop exceeds 5 iterations, surface to human for guidance
 - Reviewers are advisory - explain disagreements if you believe feedback is incorrect
 
-## Execution Handoff
+## Execution handoff
 
 After saving the plan:
 
@@ -138,10 +143,42 @@ After saving the plan:
 **Execution path depends on harness capabilities:**
 
 **If harness has subagents (Claude Code, etc.):**
+
 - **REQUIRED:** Use supapowers:subagent-driven-development
 - Do NOT offer a choice - subagent-driven is the standard approach
 - Fresh subagent per task + two-stage review
 
 **If harness does NOT have subagents:**
+
 - Execute plan in current session using supapowers:executing-plans
 - Batch execution with checkpoints for review
+
+## Agents
+
+| File | Purpose |
+| ------ | --------- |
+| `agents/writing-plans-agent.md` | Primary agent: writes the full plan from a spec, runs review loop, saves output |
+| `agents/plan-document-reviewer.md` | Reviewer subagent: validates a plan chunk for completeness and spec alignment |
+
+## References
+
+| File | Source |
+| ------ | -------- |
+| `references/fetch-references.md` | Index of authoritative sources and key concepts |
+| `references/tdd-martinfowler.md` | Martin Fowler on TDD (fetch with script) |
+| `references/implementation-plan-guide.md` | Implementation plan components guide (fetch with script) |
+| `references/work-breakdown-structure.md` | WBS task decomposition methodology (fetch with script) |
+
+Run `scripts/fetch_resources.py` to download or update the fetched reference files.
+
+## Scripts
+
+| File | Purpose |
+| ------ | --------- |
+| `scripts/fetch_resources.py` | Fetches authoritative reference content from the web into `references/` |
+
+## Eval
+
+| File | Purpose |
+| ------ | --------- |
+| `eval/evals.json` | Evaluation suite for this skill (empty — add evals as TDD pressure scenarios are developed) |

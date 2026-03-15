@@ -1,9 +1,9 @@
 ---
+description: Enforce red-green-refactor TDD discipline when writing code. Use when implementing any feature, bug fix, behavior change, or refactoring — before writing any production code. Use when the user mentions TDD, test-first, or "write failing test." Counters rationalizations for skipping tests and enforces the iron law that no production code may exist without a prior failing test.
 name: test-driven-development
-description: Use when implementing any feature or bugfix, before writing implementation code
 ---
 
-# Test-Driven Development (TDD)
+# Test-Driven development (TDD)
 
 ## Overview
 
@@ -13,30 +13,33 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 **Violating the letter of the rules is violating the spirit of the rules.**
 
-## When to Use
+## When to use
 
 **Always:**
+
 - New features
 - Bug fixes
 - Refactoring
 - Behavior changes
 
 **Exceptions (ask your human partner):**
+
 - Throwaway prototypes
 - Generated code
 - Configuration files
 
-Thinking "skip TDD just this once"? Stop. That's rationalization.
+Thinking "skip TDD this once"? Stop. That's rationalization.
 
-## The Iron Law
+## The iron law
 
-```
+```text
 NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
 ```
 
 Write code before the test? Delete it. Start over.
 
 **No exceptions:**
+
 - Don't keep it as "reference"
 - Don't "adapt" it while writing tests
 - Don't look at it
@@ -68,7 +71,7 @@ digraph tdd_cycle {
 }
 ```
 
-### RED - Write Failing Test
+### RED - write failing test
 
 Write one minimal test showing what should happen.
 
@@ -87,7 +90,8 @@ test('retries failed operations 3 times', async () => {
   expect(result).toBe('success');
   expect(attempts).toBe(3);
 });
-```
+
+```text
 Clear name, tests real behavior, one thing
 </Good>
 
@@ -102,15 +106,17 @@ test('retry works', async () => {
   expect(mock).toHaveBeenCalledTimes(3);
 });
 ```
+
 Vague name, tests mock not code
 </Bad>
 
 **Requirements:**
+
 - One behavior
 - Clear name
 - Real code (no mocks unless unavoidable)
 
-### Verify RED - Watch It Fail
+### Verify RED - watch it fail
 
 **MANDATORY. Never skip.**
 
@@ -119,6 +125,7 @@ npm test path/to/test.test.ts
 ```
 
 Confirm:
+
 - Test fails (not errors)
 - Failure message is expected
 - Fails because feature missing (not typos)
@@ -127,7 +134,7 @@ Confirm:
 
 **Test errors?** Fix error, re-run until it fails correctly.
 
-### GREEN - Minimal Code
+### GREEN - minimal code
 
 Write simplest code to pass the test.
 
@@ -144,7 +151,7 @@ async function retryOperation<T>(fn: () => Promise<T>): Promise<T> {
   throw new Error('unreachable');
 }
 ```
-Just enough to pass
+Enough to pass, nothing more
 </Good>
 
 <Bad>
@@ -165,7 +172,7 @@ Over-engineered
 
 Don't add features, refactor other code, or "improve" beyond the test.
 
-### Verify GREEN - Watch It Pass
+### Verify GREEN - watch it pass
 
 **MANDATORY.**
 
@@ -174,6 +181,7 @@ npm test path/to/test.test.ts
 ```
 
 Confirm:
+
 - Test passes
 - Other tests still pass
 - Output pristine (no errors, warnings)
@@ -182,9 +190,10 @@ Confirm:
 
 **Other tests fail?** Fix now.
 
-### REFACTOR - Clean Up
+### REFACTOR - clean up
 
 After green only:
+
 - Remove duplication
 - Improve names
 - Extract helpers
@@ -195,19 +204,20 @@ Keep tests green. Don't add behavior.
 
 Next failing test for next feature.
 
-## Good Tests
+## Good tests
 
 | Quality | Good | Bad |
-|---------|------|-----|
+| --------- | ------ | ----- |
 | **Minimal** | One thing. "and" in name? Split it. | `test('validates email and domain and whitespace')` |
 | **Clear** | Name describes behavior | `test('test1')` |
 | **Shows intent** | Demonstrates desired API | Obscures what code should do |
 
-## Why Order Matters
+## Why order matters
 
 **"I'll write tests after to verify it works"**
 
 Tests written after code pass immediately. Passing immediately proves nothing:
+
 - Might test wrong thing
 - Might test implementation, not behavior
 - Might miss edge cases you forgot
@@ -218,9 +228,10 @@ Test-first forces you to see the test fail, proving it actually tests something.
 **"I already manually tested all the edge cases"**
 
 Manual testing is ad-hoc. You think you tested everything but:
+
 - No record of what you tested
 - Can't re-run when code changes
-- Easy to forget cases under pressure
+- Cases forgotten under pressure
 - "It worked when I tried it" ≠ comprehensive
 
 Automated tests are systematic. They run the same way every time.
@@ -228,6 +239,7 @@ Automated tests are systematic. They run the same way every time.
 **"Deleting X hours of work is wasteful"**
 
 Sunk cost fallacy. The time is already gone. Your choice now:
+
 - Delete and rewrite with TDD (X more hours, high confidence)
 - Keep it and add tests after (30 min, low confidence, likely bugs)
 
@@ -236,6 +248,7 @@ The "waste" is keeping code you can't trust. Working code without real tests is 
 **"TDD is dogmatic, being pragmatic means adapting"**
 
 TDD IS pragmatic:
+
 - Finds bugs before commit (faster than debugging after)
 - Prevents regressions (tests catch breaks immediately)
 - Documents behavior (tests show how to use code)
@@ -253,11 +266,11 @@ Tests-first force edge case discovery before implementing. Tests-after verify yo
 
 30 minutes of tests after ≠ TDD. You get coverage, lose proof tests work.
 
-## Common Rationalizations
+## Common rationalizations
 
 | Excuse | Reality |
-|--------|---------|
-| "Too simple to test" | Simple code breaks. Test takes 30 seconds. |
+| -------- | --------- |
+| "Too trivial to test" | Trivial code breaks. A test takes 30 seconds. |
 | "I'll test after" | Tests passing immediately prove nothing. |
 | "Tests after achieve same goals" | Tests-after = "what does this do?" Tests-first = "what should this do?" |
 | "Already manually tested" | Ad-hoc ≠ systematic. No record, can't re-run. |
@@ -269,14 +282,14 @@ Tests-first force edge case discovery before implementing. Tests-after verify yo
 | "Manual test faster" | Manual doesn't prove edge cases. You'll re-test every change. |
 | "Existing code has no tests" | You're improving it. Add tests for existing code. |
 
-## Red Flags - STOP and Start Over
+## Red flags - STOP and start over
 
 - Code before test
 - Test after implementation
 - Test passes immediately
 - Can't explain why test failed
 - Tests added "later"
-- Rationalizing "just this once"
+- Rationalizing "this one time"
 - "I already manually tested it"
 - "Tests after achieve the same purpose"
 - "It's about spirit not ritual"
@@ -287,11 +300,12 @@ Tests-first force edge case discovery before implementing. Tests-after verify yo
 
 **All of these mean: Delete code. Start over with TDD.**
 
-## Example: Bug Fix
+## Example: bug fix
 
 **Bug:** Empty email accepted
 
 **RED**
+
 ```typescript
 test('rejects empty email', async () => {
   const result = await submitForm({ email: '' });
@@ -300,12 +314,14 @@ test('rejects empty email', async () => {
 ```
 
 **Verify RED**
+
 ```bash
 $ npm test
 FAIL: expected 'Email required', got undefined
 ```
 
 **GREEN**
+
 ```typescript
 function submitForm(data: FormData) {
   if (!data.email?.trim()) {
@@ -316,6 +332,7 @@ function submitForm(data: FormData) {
 ```
 
 **Verify GREEN**
+
 ```bash
 $ npm test
 PASS
@@ -324,7 +341,7 @@ PASS
 **REFACTOR**
 Extract validation for multiple fields if needed.
 
-## Verification Checklist
+## Verification checklist
 
 Before marking work complete:
 
@@ -339,16 +356,16 @@ Before marking work complete:
 
 Can't check all boxes? You skipped TDD. Start over.
 
-## When Stuck
+## When stuck
 
 | Problem | Solution |
-|---------|----------|
+| --------- | ---------- |
 | Don't know how to test | Write wished-for API. Write assertion first. Ask your human partner. |
 | Test too complicated | Design too complicated. Simplify interface. |
 | Must mock everything | Code too coupled. Use dependency injection. |
 | Test setup huge | Extract helpers. Still complex? Simplify design. |
 
-## Debugging Integration
+## Debugging integration
 
 Bug found? Write failing test reproducing it. Follow TDD cycle. Test proves fix and prevents regression.
 
@@ -356,16 +373,40 @@ Never fix bugs without a test.
 
 ## Testing Anti-Patterns
 
-When adding mocks or test utilities, read @testing-anti-patterns.md to avoid common pitfalls:
+When adding mocks or test utilities, read `references/testing-anti-patterns.md` to avoid common pitfalls:
+
 - Testing mock behavior instead of real behavior
 - Adding test-only methods to production classes
 - Mocking without understanding dependencies
 
-## Final Rule
+## Final rule
 
-```
+```text
 Production code → test exists and failed first
 Otherwise → not TDD
 ```
 
 No exceptions without your human partner's permission.
+
+## References
+
+Load these files on demand — do not load all of them upfront.
+
+| File | Load when |
+| --- | --- |
+| `references/testing-anti-patterns.md` | Writing or reviewing tests, adding mocks, or considering test-only methods in production code. |
+| `references/martinfowler-tdd.md` | Needing authoritative background on the TDD cycle (run fetch script to populate). |
+| `references/kent-beck-canon-tdd.md` | Clarifying canonical TDD rules from the methodology's creator (run fetch script to populate). |
+| `references/tdd-mooc-chapter1.md` | Structured academic overview of TDD fundamentals (run fetch script to populate). |
+
+## Scripts
+
+| Script | Purpose |
+| --- | --- |
+| `scripts/fetch_resources.py` | Fetch fresh content from authoritative TDD sources into `references/`. Run before major skill revisions. See `references/fetch-references.md` for details. |
+
+## Agents
+
+| Agent | Purpose |
+| --- | --- |
+| `agents/test-driven-development-agent.md` | Primary agent for enforcing TDD discipline on a specific task. Use for subagent delegation or eval runs. |
