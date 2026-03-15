@@ -1,9 +1,9 @@
 ---
+description: Use when a development branch is complete and you need to decide what to do with it - merge locally, open a pull request, keep it, or discard it
 name: finishing-a-development-branch
-description: Use when implementation is complete, all tests pass, and you need to decide how to integrate the work - guides completion of development work by presenting structured options for merge, PR, or cleanup
 ---
 
-# Finishing a Development Branch
+# Finishing a development branch
 
 ## Overview
 
@@ -13,9 +13,9 @@ Guide completion of development work by presenting clear options and handling ch
 
 **Announce at start:** "I'm using the finishing-a-development-branch skill to complete this work."
 
-## The Process
+## The process
 
-### Step 1: Verify Tests
+### Step 1: verify tests
 
 **Before presenting options, verify tests pass:**
 
@@ -25,7 +25,8 @@ npm test / cargo test / pytest / go test ./...
 ```
 
 **If tests fail:**
-```
+
+```text
 Tests failing (<N> failures). Must fix before completing:
 
 [Show failures]
@@ -37,7 +38,7 @@ Stop. Don't proceed to Step 2.
 
 **If tests pass:** Continue to Step 2.
 
-### Step 2: Determine Base Branch
+### Step 2: determine base branch
 
 ```bash
 # Try common base branches
@@ -46,11 +47,11 @@ git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null
 
 Or ask: "This branch split from main - is that correct?"
 
-### Step 3: Present Options
+### Step 3: present options
 
 Present exactly these 4 options:
 
-```
+```text
 Implementation complete. What would you like to do?
 
 1. Merge back to <base-branch> locally
@@ -63,9 +64,9 @@ Which option?
 
 **Don't add explanation** - keep options concise.
 
-### Step 4: Execute Choice
+### Step 4: execute choice
 
-#### Option 1: Merge Locally
+#### Option 1: merge locally
 
 ```bash
 # Switch to base branch
@@ -86,7 +87,7 @@ git branch -d <feature-branch>
 
 Then: Cleanup worktree (Step 5)
 
-#### Option 2: Push and Create PR
+#### Option 2: push and create PR
 
 ```bash
 # Push branch
@@ -105,16 +106,17 @@ EOF
 
 Then: Cleanup worktree (Step 5)
 
-#### Option 3: Keep As-Is
+#### Option 3: keep As-Is
 
 Report: "Keeping branch <name>. Worktree preserved at <path>."
 
 **Don't cleanup worktree.**
 
-#### Option 4: Discard
+#### Option 4: discard
 
 **Confirm first:**
-```
+
+```text
 This will permanently delete:
 - Branch <name>
 - All commits: <commit-list>
@@ -126,6 +128,7 @@ Type 'discard' to confirm.
 Wait for exact confirmation.
 
 If confirmed:
+
 ```bash
 git checkout <base-branch>
 git branch -D <feature-branch>
@@ -133,58 +136,66 @@ git branch -D <feature-branch>
 
 Then: Cleanup worktree (Step 5)
 
-### Step 5: Cleanup Worktree
+### Step 5: cleanup worktree
 
 **For Options 1, 2, 4:**
 
 Check if in worktree:
+
 ```bash
 git worktree list | grep $(git branch --show-current)
 ```
 
 If yes:
+
 ```bash
 git worktree remove <worktree-path>
 ```
 
 **For Option 3:** Keep worktree.
 
-## Quick Reference
+## Quick reference
 
 | Option | Merge | Push | Keep Worktree | Cleanup Branch |
-|--------|-------|------|---------------|----------------|
+| -------- | ------- | ------ | --------------- | ---------------- |
 | 1. Merge locally | ✓ | - | - | ✓ |
 | 2. Create PR | - | ✓ | ✓ | - |
 | 3. Keep as-is | - | - | ✓ | - |
 | 4. Discard | - | - | - | ✓ (force) |
 
-## Common Mistakes
+## Common mistakes
 
 **Skipping test verification**
+
 - **Problem:** Merge broken code, create failing PR
 - **Fix:** Always verify tests before offering options
 
 **Open-ended questions**
+
 - **Problem:** "What should I do next?" → ambiguous
 - **Fix:** Present exactly 4 structured options
 
 **Automatic worktree cleanup**
+
 - **Problem:** Remove worktree when might need it (Option 2, 3)
 - **Fix:** Only cleanup for Options 1 and 4
 
 **No confirmation for discard**
+
 - **Problem:** Accidentally delete work
 - **Fix:** Require typed "discard" confirmation
 
-## Red Flags
+## Red flags
 
 **Never:**
+
 - Proceed with failing tests
 - Merge without verifying tests on result
 - Delete work without confirmation
 - Force-push without explicit request
 
 **Always:**
+
 - Verify tests before offering options
 - Present exactly 4 options
 - Get typed confirmation for Option 4
@@ -193,8 +204,32 @@ git worktree remove <worktree-path>
 ## Integration
 
 **Called by:**
+
 - **subagent-driven-development** (Step 7) - After all tasks complete
 - **executing-plans** (Step 5) - After all batches complete
 
 **Pairs with:**
+
 - **using-git-worktrees** - Cleans up worktree created by that skill
+
+## Reference index
+
+| File | Purpose |
+| --- | --- |
+| `references/fetch-references.md` | How and when to refresh reference files |
+| `references/git-branching-workflows.md` | Git branching workflow patterns (fetched) |
+| `references/git-basic-branching-and-merging.md` | Git merge mechanics reference (fetched) |
+| `references/github-flow.md` | GitHub Flow PR workflow reference (fetched) |
+| `references/github-merge-methods.md` | GitHub merge commit/squash/rebase options (fetched) |
+
+## Script index
+
+| Script | Purpose |
+| --- | --- |
+| `scripts/fetch_resources.py` | Fetch latest content from git-scm.com and docs.GitHub.com |
+
+## Agent index
+
+| Agent | Purpose |
+| --- | --- |
+| `agents/finishing-a-development-branch-agent.md` | Primary agent: verify tests, present options, execute workflow, clean up worktree |

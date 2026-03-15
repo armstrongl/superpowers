@@ -1,9 +1,9 @@
 ---
+description: Set up isolated git worktrees for parallel branch development. Use this skill whenever starting feature work, fixing bugs, reviewing PRs, or executing any implementation plan — it creates a dedicated working directory per branch so work never bleeds across tasks. Trigger this skill when the user says "new branch," "isolated workspace," "worktree," "parallel work," or before any implementation that modifies the codebase. Always prefer this over stashing or switching branches in place.
 name: using-git-worktrees
-description: Use when starting feature work that needs isolation from current workspace or before executing implementation plans - creates isolated git worktrees with smart directory selection and safety verification
 ---
 
-# Using Git Worktrees
+# Using git worktrees
 
 ## Overview
 
@@ -13,11 +13,11 @@ Git worktrees create isolated workspaces sharing the same repository, allowing w
 
 **Announce at start:** "I'm using the using-git-worktrees skill to set up an isolated workspace."
 
-## Directory Selection Process
+## Directory selection process
 
 Follow this priority order:
 
-### 1. Check Existing Directories
+### 1. check existing directories
 
 ```bash
 # Check in priority order
@@ -27,7 +27,7 @@ ls -d worktrees 2>/dev/null      # Alternative
 
 **If found:** Use that directory. If both exist, `.worktrees` wins.
 
-### 2. Check CLAUDE.md
+### 2. check CLAUDE.md
 
 ```bash
 grep -i "worktree.*director" CLAUDE.md 2>/dev/null
@@ -35,11 +35,11 @@ grep -i "worktree.*director" CLAUDE.md 2>/dev/null
 
 **If preference specified:** Use it without asking.
 
-### 3. Ask User
+### 3. ask user
 
 If no directory exists and no CLAUDE.md preference:
 
-```
+```text
 No worktree directory found. Where should I create worktrees?
 
 1. .worktrees/ (project-local, hidden)
@@ -48,9 +48,9 @@ No worktree directory found. Where should I create worktrees?
 Which would you prefer?
 ```
 
-## Safety Verification
+## Safety verification
 
-### For Project-Local Directories (.worktrees or worktrees)
+### For Project-Local directories (.worktrees or worktrees)
 
 **MUST verify directory is ignored before creating worktree:**
 
@@ -62,25 +62,26 @@ git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/d
 **If NOT ignored:**
 
 Per Jesse's rule "Fix broken things immediately":
+
 1. Add appropriate line to .gitignore
 2. Commit the change
 3. Proceed with worktree creation
 
 **Why critical:** Prevents accidentally committing worktree contents to repository.
 
-### For Global Directory (~/.config/supapowers/worktrees)
+### For global directory (~/.config/supapowers/worktrees)
 
 No .gitignore verification needed - outside project entirely.
 
-## Creation Steps
+## Creation steps
 
-### 1. Detect Project Name
+### 1. detect project name
 
 ```bash
 project=$(basename "$(git rev-parse --show-toplevel)")
 ```
 
-### 2. Create Worktree
+### 2. create worktree
 
 ```bash
 # Determine full path
@@ -98,7 +99,7 @@ git worktree add "$path" -b "$BRANCH_NAME"
 cd "$path"
 ```
 
-### 3. Run Project Setup
+### 3. run project setup
 
 Auto-detect and run appropriate setup:
 
@@ -117,7 +118,7 @@ if [ -f pyproject.toml ]; then poetry install; fi
 if [ -f go.mod ]; then go mod download; fi
 ```
 
-### 4. Verify Clean Baseline
+### 4. verify clean baseline
 
 Run tests to ensure worktree starts clean:
 
@@ -133,18 +134,18 @@ go test ./...
 
 **If tests pass:** Report ready.
 
-### 5. Report Location
+### 5. report location
 
-```
+```text
 Worktree ready at <full-path>
 Tests passing (<N> tests, 0 failures)
 Ready to implement <feature-name>
 ```
 
-## Quick Reference
+## Quick reference
 
 | Situation | Action |
-|-----------|--------|
+| ----------- | -------- |
 | `.worktrees/` exists | Use it (verify ignored) |
 | `worktrees/` exists | Use it (verify ignored) |
 | Both exist | Use `.worktrees/` |
@@ -153,7 +154,7 @@ Ready to implement <feature-name>
 | Tests fail during baseline | Report failures + ask |
 | No package.json/Cargo.toml | Skip dependency install |
 
-## Common Mistakes
+## Common mistakes
 
 ### Skipping ignore verification
 
@@ -175,9 +176,9 @@ Ready to implement <feature-name>
 - **Problem:** Breaks on projects using different tools
 - **Fix:** Auto-detect from project files (package.json, etc.)
 
-## Example Workflow
+## Example workflow
 
-```
+```text
 You: I'm using the using-git-worktrees skill to set up an isolated workspace.
 
 [Check .worktrees/ - exists]
@@ -191,9 +192,10 @@ Tests passing (47 tests, 0 failures)
 Ready to implement auth feature
 ```
 
-## Red Flags
+## Red flags
 
 **Never:**
+
 - Create worktree without verifying it's ignored (project-local)
 - Skip baseline test verification
 - Proceed with failing tests without asking
@@ -201,6 +203,7 @@ Ready to implement auth feature
 - Skip CLAUDE.md check
 
 **Always:**
+
 - Follow directory priority: existing > CLAUDE.md > ask
 - Verify directory is ignored for project-local
 - Auto-detect and run project setup
@@ -209,10 +212,29 @@ Ready to implement auth feature
 ## Integration
 
 **Called by:**
+
 - **brainstorming** (Phase 4) - REQUIRED when design is approved and implementation follows
 - **subagent-driven-development** - REQUIRED before executing any tasks
 - **executing-plans** - REQUIRED before executing any tasks
 - Any skill needing isolated workspace
 
 **Pairs with:**
+
 - **finishing-a-development-branch** - REQUIRED for cleanup after work complete
+
+## Reference and script index
+
+| Reference | Load when |
+| --- | --- |
+| `references/fetch-references.md` | Before running `scripts/fetch_resources.py` or when reference files feel outdated. |
+| `references/git-worktree-official.md` | You need exact syntax for any `git worktree` subcommand or flag. |
+| `references/git-worktree-kernel.md` | Debugging unexpected worktree behavior or verifying edge-case flag semantics. |
+| `references/git-worktree-best-practices.md` | Advising on directory structure, cleanup workflows, or multi-agent parallelism. |
+
+| Agent | Purpose |
+| --- | --- |
+| `agents/using-git-worktrees-agent.md` | Primary agent: set up a worktree independently when dispatched as a subagent. |
+
+| Script | Usage |
+| --- | --- |
+| `scripts/fetch_resources.py` | Fetch latest git-worktree reference content from official sources. |

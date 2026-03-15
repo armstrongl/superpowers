@@ -1,70 +1,120 @@
 ---
+description: Execute a written implementation plan step by step with review checkpoints, task tracking, and verification. Use when the user has a plan file ready to implement, says "execute this plan," "implement this plan," "run this plan," or "start on this plan." Prefer supapowers:subagent-driven-development when subagents are available.
 name: executing-plans
-description: Use when you have a written implementation plan to execute in a separate session with review checkpoints
 ---
 
-# Executing Plans
+# Executing plans
 
-## Overview
-
-Load plan, review critically, execute all tasks, report when complete.
+Load a plan, review it critically, execute all tasks with verification, and hand off to the
+finishing workflow when done.
 
 **Announce at start:** "I'm using the executing-plans skill to implement this plan."
 
-**Note:** Tell your human partner that Superpowers works much better with access to subagents. The quality of its work will be significantly higher if run on a platform with subagent support (such as Claude Code or Codex). If subagents are available, use supapowers:subagent-driven-development instead of this skill.
+**Note:** This skill works best on platforms with subagent support (Claude Code, Codex). If
+subagents are available, consider `supapowers:subagent-driven-development` instead — it provides
+higher-quality parallel execution.
 
-## The Process
+## The process
 
-### Step 1: Load and Review Plan
-1. Read plan file
-2. Review critically - identify any questions or concerns about the plan
-3. If concerns: Raise them with your human partner before starting
-4. If no concerns: Create TodoWrite and proceed
+### Step 1: load and review the plan
 
-### Step 2: Execute Tasks
+1. Read the plan file.
+2. Review critically — check for:
+   - Ambiguous or underspecified instructions.
+   - Missing prerequisites or dependencies.
+   - Verification steps that reference things that do not exist yet.
+   - Anything that would prevent starting task 1.
+3. If concerns exist: list them and stop. Raise them with your human partner before starting.
+4. If no concerns: create a task tracking list and proceed.
 
-For each task:
-1. Mark as in_progress
-2. Follow each step exactly (plan has bite-sized steps)
-3. Run verifications as specified
-4. Mark as completed
+### Step 2: prepare the workspace
 
-### Step 3: Complete Development
+1. Confirm you are on the correct working branch (not `main` or `master` unless explicitly
+   authorized).
+2. Confirm the working directory state is clean or that any uncommitted changes are intentional.
+3. Complete any environment setup steps the plan specifies.
 
-After all tasks complete and verified:
+### Step 3: execute tasks
+
+For each task, in order:
+
+1. Mark as `in_progress`.
+2. Read the task description and all subtasks.
+3. Execute each subtask exactly as written. Do not improvise.
+4. Run the verification steps the plan specifies for this task.
+5. If verification passes: mark as `completed` and continue.
+6. If verification fails: diagnose the failure. If the fix is clear and low-risk, apply it
+   and re-verify once. If still failing or the fix is unclear, stop — report the failure with
+   full context and wait for guidance.
+
+If a task depends on a previous task that failed or was skipped, do not continue. Report the
+dependency issue.
+
+### Step 4: complete development
+
+After all tasks are completed and verified:
+
 - Announce: "I'm using the finishing-a-development-branch skill to complete this work."
-- **REQUIRED SUB-SKILL:** Use supapowers:finishing-a-development-branch
-- Follow that skill to verify tests, present options, execute choice
+- **Required sub-skill:** Use `supapowers:finishing-a-development-branch`.
+- Follow that skill to verify tests, present options, and execute the chosen action.
 
-## When to Stop and Ask for Help
+## When to stop and ask for help
 
-**STOP executing immediately when:**
-- Hit a blocker (missing dependency, test fails, instruction unclear)
-- Plan has critical gaps preventing starting
-- You don't understand an instruction
-- Verification fails repeatedly
+Stop executing immediately when:
 
-**Ask for clarification rather than guessing.**
+- A blocker appears: missing dependency, failing test, unclear instruction.
+- The plan has critical gaps that prevent starting the next task.
+- Verification fails repeatedly and the cause is not clear.
 
-## When to Revisit Earlier Steps
+When stopping, report: which task failed, the exact error or ambiguity, what you already tried,
+and what information you need to proceed. Vague reports delay resolution.
 
-**Return to Review (Step 1) when:**
-- Partner updates the plan based on your feedback
-- Fundamental approach needs rethinking
+Ask for clarification rather than guessing. Guessing and executing the wrong thing is harder
+to undo than pausing.
 
-**Don't force through blockers** - stop and ask.
+## When to revisit earlier steps
+
+Return to the review in Step 1 when:
+
+- Your human partner updates the plan based on your feedback.
+- A blocker reveals that the fundamental approach needs rethinking.
+
+Do not force through blockers.
+
+## Checklist
+
+- [ ] Plan loaded and reviewed critically.
+- [ ] Workspace confirmed on correct branch.
+- [ ] All tasks executed in order with verifications.
+- [ ] Plan-level verifications passed.
+- [ ] `finishing-a-development-branch` invoked.
 
 ## Remember
-- Review plan critically first
-- Follow plan steps exactly
-- Don't skip verifications
-- Reference skills when plan says to
-- Stop when blocked, don't guess
-- Never start implementation on main/master branch without explicit user consent
+
+- Review the plan critically before starting — catch problems before they cost execution time.
+- Follow plan steps exactly — the plan was written with specific intent.
+- Skip no verifications — they exist to catch specific failure modes.
+- Invoke referenced skills when the plan says to — do not replicate their logic inline.
+- Never start implementation on `main`/`master` without explicit user consent.
 
 ## Integration
 
-**Required workflow skills:**
-- **supapowers:using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
-- **supapowers:writing-plans** - Creates the plan this skill executes
-- **supapowers:finishing-a-development-branch** - Complete development after all tasks
+| Skill | Role |
+| --- | --- |
+| `supapowers:using-git-worktrees` | Required: set up isolated workspace before starting. |
+| `supapowers:writing-plans` | Creates the plan this skill executes. |
+| `supapowers:finishing-a-development-branch` | Required: complete development after all tasks. |
+
+## Reference and script index
+
+| Reference | Load when |
+| --- | --- |
+| `references/fetch-references.md` | Before running `scripts/fetch_resources.py`. |
+
+| Agent | Purpose |
+| --- | --- |
+| `agents/executing-plans-agent.md` | Primary agent for independent plan execution. |
+
+| Script | Usage |
+| --- | --- |
+| `scripts/fetch_resources.py` | Fetch latest reference content for this skill. |
