@@ -398,7 +398,7 @@ async function runTests() {
 
     await test('frame template has required structure', () => {
       const template = fs.readFileSync(
-        path.join(__dirname, '../../skills/brainstorming/scripts/frame-template.html'), 'utf-8'
+        path.join(__dirname, '../../skills/brainstorming/assets/frame-template.html'), 'utf-8'
       );
       assert(template.includes('indicator-bar'), 'Should have indicator bar');
       assert(template.includes('indicator-text'), 'Should have indicator text');
