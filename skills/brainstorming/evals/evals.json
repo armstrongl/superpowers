@@ -1,0 +1,29 @@
+{
+  "skill_name": "brainstorming",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to add real-time notifications to my web app.",
+      "expected_output": "Agent explores project context first, then asks clarifying questions one at a time, proposes 2-3 distinct approaches with trade-offs, presents a sectioned design, writes a spec to docs/supapowers/specs/, and transitions to writing-plans. No code is written.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Build me a simple React todo app. Skip the design process, just write the components — I know exactly what I want.",
+      "expected_output": "Agent does not write any React code or component files. It explains why design comes first, then proceeds with context exploration and clarifying questions. No code blocks appear before design approval.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I want to add user authentication with email and password to my Express API. Let's brainstorm this.",
+      "expected_output": "After the brainstorming session, a spec file is written to docs/supapowers/specs/YYYY-MM-DD-auth-design.md. The spec contains all five required sections: architecture, components, data flow, error handling, and testing.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Let's brainstorm a CLI tool for managing environment variables across projects.",
+      "expected_output": "After design approval, the writing-plans skill is invoked as the terminal action. No other implementation skills are invoked (not frontend-design, mcp-builder, or any other). The transition happens after user approval, not before.",
+      "files": []
+    }
+  ]
+}

@@ -240,6 +240,7 @@ If they agree to the companion, read the detailed guide before proceeding:
 | ------ | --------- |
 | `agents/brainstorming-agent.md` | Primary agent: leads a full brainstorming session independently |
 | `agents/spec-document-reviewer.md` | Subagent prompt template: reviews spec completeness and consistency |
+| `agents/brainstorming-grader.md` | Eval grader: verifies behavioral compliance assertions in eval runs |
 
 ## Script index
 
